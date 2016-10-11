@@ -10,6 +10,8 @@ const float SCREEN_NEAR = 0.1f;
 const bool FULL_SCREEN = false;
 const bool VSYNC_ENABLE = true;
 
+const float PI = 3.14159265358979f;
+
 template <class T>
 void SafeRelease(T ptr)
 {

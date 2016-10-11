@@ -4,7 +4,8 @@
 TextureShader::TextureShader(ID3D11Device * device, HWND hwnd, LPCSTR shaderFileName, LPCSTR vertexFuncName, LPCSTR pixelFuncName) :
 	Shader(device, hwnd, shaderFileName, vertexFuncName, pixelFuncName)
 {
-	m_bInitialized = InitializeSamplerState(device);
+	//Initializer Shader(Create Layout, vertex, index constant buffer)
+	m_bInitialized = Initialize(device);
 
 }
 
@@ -14,12 +15,18 @@ TextureShader::~TextureShader()
 }
 
 
-bool TextureShader::Initialize(ID3D11Device * device, HWND hwnd, LPCSTR shaderFileName, LPCSTR vertexFuncName, LPCSTR pixelFuncName)
+bool TextureShader::Initialize(ID3D11Device * device)
 {
-	if (!Shader::Initialize(device, hwnd, shaderFileName, vertexFuncName, pixelFuncName))
+	if (!this->InitializeConstant(device))
 	{
 		return false;
 	}
+
+	if (!this->InitializeSamplerState(device))
+	{
+		return false;
+	}
+
 	return true;
 }
 
@@ -54,10 +61,15 @@ bool TextureShader::InitializeSamplerState(ID3D11Device * device)
 	return true;
 }
 
-void TextureShader::Begin(ID3D11DeviceContext * deviceContext, int indexCount)
+bool TextureShader::InitializeConstant(ID3D11Device * device)
+{
+	return true;
+}
+
+void TextureShader::Begin(ID3D11DeviceContext * deviceContext, int indexCount, int startIndexLocation)
 {
 	deviceContext->PSSetSamplers(0, 1, &m_samplerState);
-	Shader::Begin(deviceContext, indexCount);
+	Shader::Begin(deviceContext, indexCount, startIndexLocation);
 }
 
 void TextureShader::End(ID3D11DeviceContext * deviceContext)

@@ -60,14 +60,14 @@ void ResourceManager::LoadShaderResource(Shader * shader)
 	ResourceShader* resourceShader = new ResourceShader;
 	if (!resourceShader->Load(shader))
 	{
-		cout << "Unable to Load Shader by Shader Pointer " << resourceShader->GetName() << endl;
+		cout << "Unable to Load Shader by Shader Pointer : " << resourceShader->GetName() << endl;
 		SafeDelete(resourceShader);
 		return;
 	}
 
 	m_vecShader.push_back(resourceShader);
 
-	cout << "Successfully loaded by Shader Pointer " << resourceShader->GetName() << endl;
+	cout << "Successfully loaded by Shader Pointer : " << resourceShader->GetName() << endl;
 
 }
 
@@ -120,6 +120,14 @@ Texture * ResourceManager::GetTextureByName(char * textureName)
 	}
 
 	return nullptr;
+}
+
+Texture * ResourceManager::GetTextureByIndex(int index)
+{
+	if (index < 0)
+		return nullptr;
+	else
+		return m_vecTexture.at(index)->GetTexture();
 }
 
 int ResourceManager::GetTextureIndexByName(const char * textureName)

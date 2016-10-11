@@ -36,5 +36,6 @@ private:
 	
 	int m_vertexCount;
 	int m_indexCount;
+	int m_StartIndexLocation;
 };
 

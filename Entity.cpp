@@ -44,7 +44,6 @@ void Entity::Update()
 	//m_velocity.z *= 0.96f;
 	m_velocity.z = 0.f;
 
-	
 	XMStoreFloat4x4(&m_worldMatrix, XMMatrixMultiply(XMLoadFloat4x4(&m_worldMatrix), XMMatrixTranslation(m_position.x, m_position.y, m_position.z)));
 
 	//Model update

@@ -8,6 +8,8 @@ VertexBuffer::VertexBuffer()
 	m_vertexBuffer = nullptr;
 	m_indexBuffer = nullptr;
 	m_shader = nullptr;
+
+	m_StartIndexLocation = 0;
 }
 
 
@@ -20,6 +22,9 @@ VertexBuffer::~VertexBuffer()
 
 bool VertexBuffer::InitializeMesh(ID3D11Device * device, Shader * shader, VertexType* vertices, unsigned long* Indices, int meshTriangles, int totalVerts)
 {
+
+	m_shader = shader;
+
 	HRESULT result;
 	//Create index buffer
 	D3D11_BUFFER_DESC indexBufferDesc;
@@ -155,7 +160,7 @@ void VertexBuffer::Render(ID3D11DeviceContext * deviceContext)
 	stride = sizeof(VertexType);
 	offset = 0;
 
-	m_shader->Begin(deviceContext, m_indexCount);
+	m_shader->Begin(deviceContext, m_indexCount, m_StartIndexLocation);
 
 	deviceContext->IASetVertexBuffers(0, 1, &m_vertexBuffer, &stride, &offset);
 	deviceContext->IASetIndexBuffer(m_indexBuffer, DXGI_FORMAT_R32_UINT, 0);

@@ -9,11 +9,19 @@
 //--------------------------------------------------------------------------------------
 // Globals
 //--------------------------------------------------------------------------------------
-cbuffer cbPerObject : register( b0 )
+//cbuffer cbPerObject : register( b0 )
+//{
+//	matrix		g_mWorldViewProjection	: packoffset( c0 );
+//	matrix		g_mWorld				: packoffset( c4 );
+//};
+
+cbuffer MatrixBuffer
 {
-	matrix		g_mWorldViewProjection	: packoffset( c0 );
-	matrix		g_mWorld				: packoffset( c4 );
+	matrix WorldMatrix;
+	matrix ViewMatrix;
+	matrix ProjectionMatrix;
 };
+
 
 //--------------------------------------------------------------------------------------
 // Input / Output structures
@@ -39,8 +47,11 @@ VS_OUTPUT VSMain( VS_INPUT Input )
 {
 	VS_OUTPUT Output;
 	
-	Output.vPosition = mul( Input.vPosition, g_mWorldViewProjection );
-	Output.vNormal = mul( Input.vNormal, (float3x3)g_mWorld );
+	Output.vPosition = mul(Input.vPosition, WorldMatrix);
+	Output.vPosition = mul(Output.vPosition, ViewMatrix);
+	Output.vPosition = mul(Output.vPosition, ProjectionMatrix);
+
+	Output.vNormal = mul( Input.vNormal, (float3x3)WorldMatrix );
 	Output.vTexcoord = Input.vTexcoord;
 	
 	return Output;

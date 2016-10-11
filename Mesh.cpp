@@ -1,5 +1,6 @@
 #include "Mesh.h"
 #include "ResourceManager.h"
+#include "MeshShader.h"
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -1071,7 +1072,7 @@ void Mesh::Initialize(ID3D11Device * device, Shader * shader, LPCSTR objFileName
 	m_meshName = objFileName;
 	m_meshName = m_meshName.substr(0, m_meshName.find_last_of("."));
 
-	if (!this->LoadObjModel(device, objFileName, false, true))
+	if (!this->LoadObjModel(device, objFileName, true, true))
 	{
 		cout << "Couldn't LoadObjModel" << endl;
 		return;
@@ -1092,6 +1093,50 @@ void Mesh::Update()
 
 void Mesh::Render(ID3D11DeviceContext * deviceContext, XMFLOAT4X4 worldMatrix, XMFLOAT4X4 viewMatrix, XMFLOAT4X4 projMatrix)
 {
+	//deliver texture, constant
+	for (int i = 0; i < Subsets; ++i)
+	{
+		// Only draw the NON-transparent parts of the model. 
+		if (!m_material[SubsetMaterialID[i]].IsTransparent)
+		{
+			//cbPerObj.difColor = m_material[SubsetMaterialID[i]].Diffuse;      // Let shader know which color to draw the model 
+																						// (if no diffuse texture we defined)
+			//cbPerObj.hasTexture = material[SubsetMaterialID[i]].HasDiffTexture; // Let shader know if we need to use a texture
+			//cbPerObj.hasNormMap = material[SubsetMaterialID[i]].HasNormMap; // Let shader know if we need to do normal mapping
+			//d3d11DevCon->UpdateSubresource(cbPerObjectBuffer, 0, NULL, &cbPerObj, 0, 0);
+		//	d3d11DevCon->VSSetConstantBuffers(0, 1, &cbPerObjectBuffer);
+			//d3d11DevCon->PSSetConstantBuffers(1, 1, &cbPerObjectBuffer);
+
+			// If this subset has a diffuse texture, send it to the pixel shader
+			if (m_material[SubsetMaterialID[i]].HasDiffTexture)
+			{
+				Texture* diffuseTexture = ResMgr->GetTextureByIndex(m_material[SubsetMaterialID[i]].DiffuseTextureID);
+				if(diffuseTexture)
+					m_shader->SetShaderParameter(deviceContext, diffuseTexture->GetTexture());
+			}
+				
+
+			// If this subset has a normal (bump) map, send it to the pixel shader
+			if (m_material[SubsetMaterialID[i]].HasNormMap)
+			{
+				Texture* diffuseTexture = ResMgr->GetTextureByIndex(m_material[SubsetMaterialID[i]].NormMapTextureID);
+				if (diffuseTexture)
+					m_shader->SetShaderParameter(deviceContext, diffuseTexture->GetTexture(), 1);
+			}
+
+			// Draw the NON-transparent stuff
+			int indexStart = SubsetIndexStart[i];
+			int indexDrawAmount = SubsetIndexStart[i + 1] - indexStart;
+			deviceContext->DrawIndexed(indexDrawAmount, indexStart, 0);
+		}
+	}
+
+	m_shader->SetShaderParameter(deviceContext, worldMatrix, viewMatrix, projMatrix);
+
+	//temp
+	MeshShader* mesh_shader = (MeshShader*)m_shader;
+	mesh_shader->SetShaderParameter(deviceContext, XMFLOAT4(1, 1, 1, 1));
+
 	m_vertexBuffer->Render(deviceContext);
 }
 

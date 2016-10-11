@@ -4,6 +4,9 @@
 #include "EntityManager.h"
 #include "Input.h"
 #include "GameComponent.h"
+#include "TextureShader.h"
+#include "MeshShader.h"
+
 Engine* Engine::m_instance = nullptr;
 
 Engine::Engine()
@@ -42,7 +45,7 @@ bool Engine::Initialize(HINSTANCE hInstance, HWND hwnd)
 	m_resourceManager = ResMgr;
 	m_resourceManager->LoadTextureResource(m_graphics->GetDevice(), "Texture/test.png");
 	m_resourceManager->LoadShaderResource(new TextureShader(m_graphics->GetDevice(), hwnd, "Shader/texture", "TextureVertexShader", "TexturePixelShader"));
-	m_resourceManager->LoadShaderResource(new TextureShader(m_graphics->GetDevice(), hwnd, "Shader/basic", "VSMain", "PSMain"));
+	m_resourceManager->LoadShaderResource(new MeshShader(m_graphics->GetDevice(), hwnd, "Shader/basic", "VSMain", "PSMain"));
 
 	if (m_graphics)
 		m_graphics->Initialize(); 
@@ -66,7 +69,11 @@ bool Engine::Initialize(HINSTANCE hInstance, HWND hwnd)
 	if (m_gameComponent)
 	{
 		if (!m_gameComponent->Initialize())
+		{
+			cout << "Couldn't GameComponent Initialize " << endl;
 			return false;
+		}
+			
 	}
 	else
 	{
@@ -97,17 +104,23 @@ void Engine::Render()
 {
 	if (m_graphics)
 	{
-		static float r = 0.f;
+		static float x = 0.f;
+		static float y = 0.f;
 		if (m_input && m_input->IsKeyDown(DIK_LEFT))
-			r += 0.01f;
+			x += 0.01f;
 		if (m_input && m_input->IsKeyDown(DIK_RIGHT))
-			r -= 0.01f;
+			x -= 0.01f;
+		if (m_input && m_input->IsKeyDown(DIK_UP))
+			y += 0.01f;
+		if (m_input && m_input->IsKeyDown(DIK_DOWN))
+			y -= 0.01f;
 
-		m_graphics->BeginScene(r, 0.f, 1.f, 1.f);
+		m_graphics->BeginScene(0.f, 0.f, 1.f, 1.f);
 
 		//render stuff goes here
-
-		XMFLOAT3 position = XMFLOAT3(0, 0, -100.f);
+		
+		//이건 스프라이트 전용
+/*		XMFLOAT3 position = XMFLOAT3(x, y, -100.f);
 		XMFLOAT3 up = XMFLOAT3(0, 1, 0);
 		XMFLOAT3 lookAt = XMFLOAT3(0, 0, 1);
 
@@ -117,6 +130,25 @@ void Engine::Render()
 		XMStoreFloat4x4(&worldMatrix, XMMatrixIdentity());
 		XMStoreFloat4x4(&viewMatrix, XMMatrixIdentity());
 		XMStoreFloat4x4(&projMatrix, XMMatrixOrthographicLH(SCREEN_WIDTH, SCREEN_HEIGHT, 0.1f, 1000.f));
+*/
+	
+		XMVECTOR camPosition = XMVectorSet(0.0f, 5.0f, -8.0f, 0.0f);
+		XMVECTOR camTarget = XMVectorSet(0.0f, 0.5f, 0.0f, 0.0f);
+		XMVECTOR camUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+
+		XMFLOAT4X4 viewMatrix, projMatrix;
+		
+	
+		XMMATRIX view = XMMatrixLookAtLH(camPosition, camTarget, camUp);
+		XMMatrixTranspose(view);
+		// Set the View matrix
+		XMStoreFloat4x4(&viewMatrix, view);
+
+		// Set the Projection matrix
+		XMMATRIX proj = XMMatrixPerspectiveFovLH(0.4f*3.14f, SCREEN_WIDTH / SCREEN_HEIGHT, 1.0f, 1000.0f);
+		XMMatrixTranspose(proj);
+		XMStoreFloat4x4(&projMatrix, proj);
+
 
 		if (m_gameComponent)
 			m_gameComponent->Render(m_graphics->GetDeviceContext(), viewMatrix, projMatrix);

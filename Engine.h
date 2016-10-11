@@ -2,12 +2,13 @@
 
 #include "Graphics.h"
 #include "Sprite.h"
-#include "TextureShader.h"
+
 
 class ResourceManager;
 class EntityManager;
 class Input;
 class GameComponent;
+class TextureShader;
 
 class Engine
 {

@@ -17,6 +17,7 @@ public:
 
 	Shader* GetShaderByName(char* shaderName);
 	Texture* GetTextureByName(char* textureName);
+	Texture* GetTextureByIndex(int index);
 	
 	int		GetTextureIndexByName(const char* textureName);
 
