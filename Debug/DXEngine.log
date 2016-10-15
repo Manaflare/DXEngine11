@@ -1,5 +1,4 @@
-﻿  Engine.cpp
+﻿  Input.cpp
   c:\program files (x86)\windows kits\8.1\include\um\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
-e:\project\dxengine\dxengine\engine.cpp(57): warning C4316: 'Camera': 힙에 할당된 개체가 16에 맞추어져 있지 않을 수도 있습니다
   DXEngine.vcxproj -> E:\Project\DXEngine\Debug\DXEngine.exe
   DXEngine.vcxproj -> E:\Project\DXEngine\Debug\DXEngine.pdb (Full PDB)

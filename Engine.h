@@ -1,8 +1,6 @@
 #pragma once
 
 #include "Graphics.h"
-#include "Sprite.h"
-
 
 class ResourceManager;
 class EntityManager;

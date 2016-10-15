@@ -1,5 +1,10 @@
 #include "EntityManager.h"
 #include "Entity.h"
+#include "EntityMesh.h"
+#include "EntitySky.h"
+#include "EntitySprite.h"
+
+enum E_ENTITY_TYPE : int;
 
 EntityManager* EntityManager::m_instance = nullptr;
 
@@ -36,9 +41,29 @@ void EntityManager::Render(ID3D11DeviceContext * deviceContext, XMFLOAT4X4 viewM
 	}
 }
 
-Entity * EntityManager::AddEntity()
+Entity * EntityManager::CreateEntity(Entity::E_ENTITY_TYPE type)
 {
-	Entity* entity = new Entity();
+	Entity* entity;
+	
+	switch (type)
+	{
+		case Entity::ENTITY_TYPE_MESH:
+		{
+			entity = new EntityMesh();
+		}
+			break;
+		case Entity::ENTITY_TYPE_SPRITE:
+		{
+			entity = new EntitySprite();
+		}
+		break;
+		case Entity::ENTITY_TYPE_SKY:
+		{
+			entity = new EntitySky();
+		}
+		break;
+	}
+	
 	
 	m_entities.push_back(entity);
 	 

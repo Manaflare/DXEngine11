@@ -2,6 +2,7 @@
 
 #include "Engine.h"
 class Entity;
+class Shader;
 
 class Player
 {

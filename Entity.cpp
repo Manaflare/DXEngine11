@@ -1,35 +1,20 @@
 #include "Entity.h"
 #include "SystemDefs.h"
-#include "Sprite.h"
-#include "Mesh.h"
+
+
 Entity::Entity()
 {
 	m_position = m_velocity = XMFLOAT3(0.f, 0.f, 0.f);
 	m_scale = XMFLOAT3(1.f, 1.f, 1.f);
 	m_fRotation = 0.f;
 	XMStoreFloat4x4(&m_worldMatrix, XMMatrixIdentity());
-	
-	m_sprite = nullptr;
-	m_mesh = nullptr;
+	m_type = ENTTIY_TYPE_NONE;
 }
 
 
 Entity::~Entity()
 {
-	SafeDelete(m_sprite);
-	SafeDelete(m_mesh);
-}
-
-void Entity::Initialize(ID3D11Device * device, Shader * shader, LPCSTR objFileName)
-{
-	m_mesh = new Mesh();
-	m_mesh->Initialize(device, shader, objFileName);
-}
-
-void Entity::InitializeSprite(ID3D11Device * device, Shader * shader, LPCSTR textureFileName, float fSpriteSize)
-{
-	m_sprite = new Sprite(fSpriteSize);
-	m_sprite->Initialize(device, shader, textureFileName);
+	
 }
 
 #include <iostream>
@@ -55,23 +40,11 @@ void Entity::Update()
 	
 	XMMATRIX worldMatrix = Rotation * Scale * Translation;
 	XMStoreFloat4x4(&m_worldMatrix, worldMatrix);
-
-	//Model update
-	if (m_mesh)
-		m_mesh->Update();
-
-	if (m_sprite)
-		m_sprite->Update();
 }
 
 void Entity::Render(ID3D11DeviceContext * deviceContext, XMFLOAT4X4 viewMatrix, XMFLOAT4X4 projMatrix)
 {
-	//Model Render
-	if (m_mesh)
-		m_mesh->Render(deviceContext, m_worldMatrix, viewMatrix, projMatrix);
-
-	if (m_sprite)
-		m_sprite->Render(deviceContext,m_worldMatrix, viewMatrix, projMatrix);
+	
 }
 
 void Entity::SetPosition(float x, float y, float z)

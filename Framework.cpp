@@ -152,14 +152,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	PAINTSTRUCT ps;
 	HDC hdc;
 
-	Input* input = Engine::GetEngine()->GetInput();
-	if(input && input->IsKeyDown(DIK_ESCAPE))
-	{
-		PostQuitMessage(0);
-		DestroyWindow(hwnd);
-		return 0;
-	}
-
 	switch (message)
 	{
 		case WM_KEYDOWN:

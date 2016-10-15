@@ -1,6 +1,6 @@
 #include "Input.h"
 #include "SystemDefs.h"
-
+#include "Engine.h"
 
 Input::Input()
 {
@@ -212,4 +212,11 @@ void Input::ProcessInput()
 		 m_mouseX = m_screenWidth; 
 	if (m_mouseY > m_screenHeight)
 		m_mouseY = m_screenHeight; 
+
+
+	if (IsKeyDown(DIK_ESCAPE))
+	{
+		PostQuitMessage(0);
+		DestroyWindow(Engine::GetEngine()->GetGraphics()->GetHwnd());
+	}
 }

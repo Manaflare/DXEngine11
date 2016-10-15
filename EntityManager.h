@@ -2,11 +2,13 @@
 
 #include <vector>
 #include <DirectXMath.h>
+#include "Entity.h"
 using namespace std;
 using namespace DirectX;
 
 class Entity;
 struct ID3D11DeviceContext;
+
 
 class EntityManager
 {
@@ -18,7 +20,7 @@ public:
 	void Update();
 	void Render(ID3D11DeviceContext* deviceContext, XMFLOAT4X4 viewMatrix, XMFLOAT4X4 projMatrix );
 
-	Entity* AddEntity();
+	Entity* CreateEntity(Entity::E_ENTITY_TYPE type);
 	void RemoveEntity(Entity* entity);
 	void RemoveAllEntities();
 
