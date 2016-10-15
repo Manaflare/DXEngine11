@@ -17,7 +17,8 @@ private:
 
 	struct CB_PS_PER_FRAME
 	{
-		XMFLOAT4 m_vLightDirAmbient;
+		XMFLOAT3 m_vLightDirAmbient;
+		float m_fAmbient;
 	};
 
 public:
@@ -29,6 +30,9 @@ public:
 	bool Initialize(ID3D11Device * device);
 	bool InitializeSamplerState(ID3D11Device * device);
 	bool InitializeConstant(ID3D11Device* device);
+
+	void Begin(ID3D11DeviceContext * deviceContext, int indexCount, int startIndexLocation);
+	void End(ID3D11DeviceContext * deviceContext);
 
 
 private:

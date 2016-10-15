@@ -33,7 +33,7 @@ bool Input::Initialize(HINSTANCE hInstance, HWND hwnd, int screenWidth, int scre
 {
 	HRESULT result;
 
-	m_screenHeight = screenWidth;
+	m_screenWidth = screenWidth;
 	m_screenHeight = screenHeight;
 
 	m_mouseX = 0;
@@ -139,6 +139,12 @@ void Input::GetMouse(int & x, int & y)
 	y = m_mouseY;
 }
 
+void Input::GetMouseState(int & x, int & y)
+{
+	x = m_mouseState.lX;
+	y = m_mouseState.lY;
+}
+
 #include <iostream>
 bool Input::ReadKeyboard()
 {
@@ -196,16 +202,14 @@ void Input::ProcessInput()
 	m_mouseX += m_mouseState.lX;
 	m_mouseY += m_mouseState.lY;
 
-	//std::cout << "x : " << m_mouseX << " y : " << m_mouseY << std::endl;
 
-	if (m_mouseX < 0)
-		m_mouseX = 0;
+	if (m_mouseX < 0) 
+		 m_mouseX = 0; 
 	if (m_mouseY < 0)
-		m_mouseY = 0;
+		m_mouseY = 0; 
 
-	if (m_mouseX > m_screenWidth)
-		m_mouseX = m_screenWidth;
-
+	if (m_mouseX > m_screenWidth) 
+		 m_mouseX = m_screenWidth; 
 	if (m_mouseY > m_screenHeight)
-		m_mouseY = m_screenHeight;
+		m_mouseY = m_screenHeight; 
 }

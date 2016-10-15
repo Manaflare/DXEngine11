@@ -1,8 +1,5 @@
-﻿  VertexBuffer.cpp
-  Shader.cpp
-  Mesh.cpp
-e:\project\dxengine\dxengine\mesh.cpp(1039): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-e:\project\dxengine\dxengine\mesh.cpp(1040): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  코드를 생성하고 있습니다...
+﻿  Engine.cpp
+  c:\program files (x86)\windows kits\8.1\include\um\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
+e:\project\dxengine\dxengine\engine.cpp(57): warning C4316: 'Camera': 힙에 할당된 개체가 16에 맞추어져 있지 않을 수도 있습니다
   DXEngine.vcxproj -> E:\Project\DXEngine\Debug\DXEngine.exe
   DXEngine.vcxproj -> E:\Project\DXEngine\Debug\DXEngine.pdb (Full PDB)

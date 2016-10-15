@@ -22,11 +22,16 @@ public:
 
 	void SetPosition(float x = 0.f, float y = 0.f, float z = 0.f);
 	void SetVelocity(float x = 0.f, float y = 0.f, float z = 0.f);
+	void SetRotation(float rotation) { m_fRotation = rotation; }
+	void SetScale(XMFLOAT3 scale) { m_scale = scale; }
 
 private:
 	XMFLOAT4X4 m_worldMatrix;
 	XMFLOAT3 m_position;
 	XMFLOAT3 m_velocity;
+	XMFLOAT3 m_scale;
+	float m_fRotation;
+
 
 	Sprite* m_sprite;
 	Mesh* m_mesh;

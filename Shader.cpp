@@ -30,8 +30,9 @@ void Shader::Begin(ID3D11DeviceContext * deviceContext, int indexCount, int star
 	deviceContext->VSSetShader(m_vertexShader, NULL, 0);
 	deviceContext->PSSetShader(m_pixelShader, NULL, 0);
 
+
 	//render
-	deviceContext->DrawIndexed(indexCount, startIndexLocation, 0);
+	//deviceContext->DrawIndexed(indexCount, startIndexLocation, 0);
 
 }
 
@@ -54,12 +55,15 @@ bool Shader::SetShaderParameter(ID3D11DeviceContext * deviceContext, XMFLOAT4X4 
 {
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
-	MatrixBufferType* dataPtr;
+	
+	//Load World View Proj Matrix 
+	XMMATRIX worldTempMatrix = XMLoadFloat4x4(&worldMatrix);
+	XMMATRIX viewTempMatrix = XMLoadFloat4x4(&viewMatrix);
+	XMMATRIX projTempMatrix = XMLoadFloat4x4(&projMatrix);
 
-	//transpose all matrices
-	XMMatrixTranspose(XMLoadFloat4x4(&worldMatrix));
-	XMMatrixTranspose(XMLoadFloat4x4(&viewMatrix));
-	XMMatrixTranspose(XMLoadFloat4x4(&projMatrix));
+	XMMATRIX WVP = worldTempMatrix * viewTempMatrix * projTempMatrix;
+	//XMStoreFloat4x4(&projMatrix, proj);
+
 
 	//lock buffer
 	result = deviceContext->Map(m_matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
@@ -68,19 +72,14 @@ bool Shader::SetShaderParameter(ID3D11DeviceContext * deviceContext, XMFLOAT4X4 
 		return false;
 	}
 
-	dataPtr = (MatrixBufferType*)mappedResource.pData;
-	dataPtr->worldMatrix = worldMatrix;
-	dataPtr->viewMatrix = viewMatrix;
-	dataPtr->ProjMatrix = projMatrix;
-
+	MatrixBufferType* dataPtr = (MatrixBufferType*)mappedResource.pData;
+	dataPtr->WVP = XMMatrixTranspose(WVP);
+	dataPtr->World = XMMatrixTranspose(worldTempMatrix);
 	//unlock buffer
 	deviceContext->Unmap(m_matrixBuffer, 0);
 
 	//update values in the shader
 	deviceContext->VSSetConstantBuffers(0, 1, &m_matrixBuffer);
-
-
-
 	return true;
 }
 
@@ -113,10 +112,10 @@ bool Shader::InitializeShader(ID3D11Device * device, HWND hwnd, LPCSTR vsFileNam
 	ID3D10Blob* vertexShaderBuffer = nullptr;
 	ID3D10Blob* pixelShaderBuffer = nullptr;
 
-	D3D11_INPUT_ELEMENT_DESC polygonLayout[4];
+	D3D11_INPUT_ELEMENT_DESC polygonLayout[3];
 	unsigned int numElements;
 	D3D11_BUFFER_DESC matrixBufferDesc;
-
+	//ZeroMemory(matrixBufferDesc, sizeof(matrixBufferDesc));
 		
 	//compile vertex shader
 //	result = D3DCompile(vsFileName, NULL, NULL, vertexFuncName, "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, NULL, &vertexShaderBuffer, &errorMessage, NULL);
@@ -201,15 +200,6 @@ bool Shader::InitializeShader(ID3D11Device * device, HWND hwnd, LPCSTR vsFileNam
 	polygonLayout[2].AlignedByteOffset = 20;
 	polygonLayout[2].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 	polygonLayout[2].InstanceDataStepRate = 0;
-
-	polygonLayout[3].SemanticName = "TANGENT";
-	polygonLayout[3].SemanticIndex = 0;
-	polygonLayout[3].Format = DXGI_FORMAT_R32G32B32_FLOAT;
-	polygonLayout[3].InputSlot = 0;
-	//polygonLayout[1].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
-	polygonLayout[3].AlignedByteOffset = 32;
-	polygonLayout[3].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
-	polygonLayout[3].InstanceDataStepRate = 0;
 
 	numElements = sizeof(polygonLayout) / sizeof(polygonLayout[0]);
 

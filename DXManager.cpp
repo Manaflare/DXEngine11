@@ -257,7 +257,7 @@ void DXManager::BeginScene(float r, float g, float b, float a)
 	m_deviceContext->ClearRenderTargetView(m_renderTagetview, color);
 
 	//clear depth buffer
-	m_deviceContext->ClearDepthStencilView(m_depthstencilView, D3D11_CLEAR_DEPTH, 1.f, 0);
+	m_deviceContext->ClearDepthStencilView(m_depthstencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
 
 
 }
@@ -450,7 +450,7 @@ bool DXManager::InitializeDepthStencilBuffer()
 	}
 
 	//set the depth stencil state
-	m_deviceContext->OMSetDepthStencilState(m_depthstencilState, 1);
+	//m_deviceContext->OMSetDepthStencilState(m_depthstencilState, 1);
 	if (FAILED(result))
 	{
 		return false;
@@ -489,10 +489,10 @@ bool DXManager::InitializeRasterizeState()
 	ZeroMemory(&rasterDesc, sizeof(rasterDesc));
 
 	rasterDesc.AntialiasedLineEnable = false;
-	rasterDesc.CullMode = D3D11_CULL_BACK;
+	rasterDesc.CullMode = D3D11_CULL_NONE;
 	rasterDesc.DepthBias = 0;
 	rasterDesc.DepthBiasClamp = 0.f;
-	rasterDesc.DepthClipEnable = true;
+	rasterDesc.DepthClipEnable = false;
 	rasterDesc.FillMode = D3D11_FILL_SOLID;
 	rasterDesc.FrontCounterClockwise = false;
 	rasterDesc.MultisampleEnable = false;

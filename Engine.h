@@ -9,6 +9,7 @@ class EntityManager;
 class Input;
 class GameComponent;
 class TextureShader;
+class Camera;
 
 class Engine
 {
@@ -36,7 +37,7 @@ private:
 
 	Graphics* m_graphics;
 	static Engine* m_instance;
-
+	Camera* m_camera;
 
 	Input* m_input;
 

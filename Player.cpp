@@ -17,7 +17,7 @@ void Player::Initialize(ID3D11Device * device, ID3D11DeviceContext * deviceConte
 {
 	m_entity = EntMgr->AddEntity();
 	m_entity->Initialize(device, shader, "Model/ground.obj");
-	//m_entity->InitializeSprite(device, shader, "test", 500.f);
+	//m_entity->InitializeSprite(device, shader, "test.png", 500.f);
 }
 
 void Player::Update()
@@ -33,15 +33,7 @@ void Player::UpdateInput()
 	if (input == nullptr)
 		return;
 
-	if (input->IsKeyDown(DIK_D))
-	{
-		m_entity->SetVelocity(150.f, 0.f);
-	}
-
-	if (input->IsKeyDown(DIK_A))
-	{
-		m_entity->SetVelocity(-150.f, 0.f);
-	}
-
+	//for free cam
+	
 
 }

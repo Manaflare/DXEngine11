@@ -4,9 +4,9 @@
 #include "Mesh.h"
 Entity::Entity()
 {
-	m_position = XMFLOAT3(0.f, 0.f, 0.f);
-	m_velocity = XMFLOAT3(0.f, 0.f, 0.f);
-
+	m_position = m_velocity = XMFLOAT3(0.f, 0.f, 0.f);
+	m_scale = XMFLOAT3(1.f, 1.f, 1.f);
+	m_fRotation = 0.f;
 	XMStoreFloat4x4(&m_worldMatrix, XMMatrixIdentity());
 	
 	m_sprite = nullptr;
@@ -32,8 +32,12 @@ void Entity::InitializeSprite(ID3D11Device * device, Shader * shader, LPCSTR tex
 	m_sprite->Initialize(device, shader, textureFileName);
 }
 
+#include <iostream>
 void Entity::Update()
 {
+	//reset world matrix
+	XMStoreFloat4x4(&m_worldMatrix, XMMatrixIdentity());
+
 	m_position.x += m_velocity.x * 0.000001f;
 	m_position.y += m_velocity.y * 0.000001f;
 	//m_position.z += m_velocity.z * 0.01f;
@@ -44,7 +48,13 @@ void Entity::Update()
 	//m_velocity.z *= 0.96f;
 	m_velocity.z = 0.f;
 
-	XMStoreFloat4x4(&m_worldMatrix, XMMatrixMultiply(XMLoadFloat4x4(&m_worldMatrix), XMMatrixTranslation(m_position.x, m_position.y, m_position.z)));
+	//apply rotation & scale & translation
+	XMMATRIX Rotation = XMMatrixRotationY(m_fRotation);
+	XMMATRIX Scale = XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z);
+	XMMATRIX Translation = XMMatrixTranslation(m_position.x, m_position.y, m_position.z);
+	
+	XMMATRIX worldMatrix = Rotation * Scale * Translation;
+	XMStoreFloat4x4(&m_worldMatrix, worldMatrix);
 
 	//Model update
 	if (m_mesh)

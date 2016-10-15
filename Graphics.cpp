@@ -12,7 +12,21 @@ Graphics::~Graphics()
 {
 	SafeDelete(m_dxManager);
 }
+bool Graphics::Initialize()
+{
+	// Setup the projection matrix.
+	// Create the projection matrix for 3D rendering.
+	XMMATRIX proj = XMMatrixPerspectiveFovLH(XM_PIDIV4, SCREEN_WIDTH / SCREEN_HEIGHT, 1.0f, 1000.0f);
+	XMStoreFloat4x4(&m_projMatrix, proj);
 
+	// Initialize the world matrix to the identity matrix.
+	XMStoreFloat4x4(&m_worldMatrix, XMMatrixIdentity());
+
+	// Create an orthographic projection matrix for 2D rendering.
+	XMStoreFloat4x4(&m_orthoMatrix, XMMatrixOrthographicLH(SCREEN_WIDTH, SCREEN_HEIGHT, 0.1f, 1000.f));
+
+	return true;
+}
 bool Graphics::InitializeDX(HWND hwnd)
 {
 	m_dxManager = new DXManager();
@@ -21,10 +35,6 @@ bool Graphics::InitializeDX(HWND hwnd)
 		return false;
 	}
 	return true;
-}
-
-void Graphics::Initialize()
-{
 }
 
 void Graphics::BeginScene(float r, float g, float b, float a)

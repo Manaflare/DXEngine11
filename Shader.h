@@ -15,9 +15,8 @@ class Shader
 private:
 	struct MatrixBufferType
 	{
-		XMFLOAT4X4 worldMatrix;
-		XMFLOAT4X4 viewMatrix;
-		XMFLOAT4X4 ProjMatrix;
+		XMMATRIX WVP;
+		XMMATRIX World;
 	};
 
 public:
@@ -39,6 +38,7 @@ protected:
 	bool InitializeShader(ID3D11Device* device, HWND hwnd, LPCSTR vsFileName, LPCSTR psFileName, LPCSTR vertexFuncName, LPCSTR pixelFuncName);
 	void OutputShaderErrorMessage(ID3DBlob* errorMessage, HWND hwnd, LPCSTR shaderFileName);
 
+public:
 	ID3D11VertexShader* m_vertexShader;
 	ID3D11PixelShader* m_pixelShader;
 	ID3D11InputLayout* m_layout;

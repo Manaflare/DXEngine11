@@ -18,7 +18,7 @@ bool GameScene::Initialize()
 /*	TextureShader* playerShader = (TextureShader*)ResMgr->GetShaderByName("texture");
 	if (playerShader == nullptr)
 		return false;
-		*/
+	*/	
 	MeshShader* playerShader = (MeshShader*)ResMgr->GetShaderByName("basic");
 	if (playerShader == nullptr)
 		return false;

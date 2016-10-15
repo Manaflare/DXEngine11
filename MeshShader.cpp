@@ -1,10 +1,12 @@
 #include "MeshShader.h"
-
+#include "SystemDefs.h"
 
 
 MeshShader::MeshShader(ID3D11Device * device, HWND hwnd, LPCSTR shaderFileName, LPCSTR vertexFuncName, LPCSTR pixelFuncName) :
 Shader(device, hwnd, shaderFileName, vertexFuncName, pixelFuncName)
 {
+	m_objColorBuffer = nullptr;
+	m_LightBuffer = nullptr;
 	InitializeSamplerState(device);
 	m_bInitialized = InitializeConstant(device);
 }
@@ -12,6 +14,8 @@ Shader(device, hwnd, shaderFileName, vertexFuncName, pixelFuncName)
 
 MeshShader::~MeshShader()
 {
+	SafeRelease(m_objColorBuffer);
+	SafeRelease(m_LightBuffer);
 }
 
 bool MeshShader::SetShaderParameter(ID3D11DeviceContext * deviceContext, XMFLOAT4 vecValue)
@@ -27,13 +31,11 @@ bool MeshShader::SetShaderParameter(ID3D11DeviceContext * deviceContext, XMFLOAT
 	}
 
 	CB_PS_PER_OBJECT* pPSPerObject = (CB_PS_PER_OBJECT*)mappedResource.pData;
-	{
-		pPSPerObject->m_vObjectColor = XMFLOAT4(1, 1, 1, 1);
-	}
+	pPSPerObject->m_vObjectColor = XMFLOAT4(1, 1, 1, 1);
 	
 	deviceContext->Unmap(m_objColorBuffer, 0);
 
-	deviceContext->PSSetConstantBuffers(NUM_OBJECT_BIND, 1, &m_objColorBuffer);
+	deviceContext->PSSetConstantBuffers(0, 1, &m_objColorBuffer);
 	
 	
 	//Light Dir
@@ -44,14 +46,12 @@ bool MeshShader::SetShaderParameter(ID3D11DeviceContext * deviceContext, XMFLOAT
 	}
 
 	CB_PS_PER_FRAME* pPSFrameObject = (CB_PS_PER_FRAME*)mappedResource.pData;
-	{
-		float fAmbient = 0.1f;
-		pPSFrameObject->m_vLightDirAmbient = XMFLOAT4(1.f, 1.f, 1.f, fAmbient);
-	}
+	pPSFrameObject->m_vLightDirAmbient = XMFLOAT3(0.f, 1.f, 1.f);
+	pPSFrameObject->m_fAmbient = 1.f;
 
 	deviceContext->Unmap(m_LightBuffer, 0);
 
-	deviceContext->PSSetConstantBuffers(NUM_FRAME_BIND, 1, &m_LightBuffer);
+	deviceContext->PSSetConstantBuffers(1, 1, &m_LightBuffer);
 
 	return true;
 }
@@ -74,7 +74,7 @@ bool MeshShader::InitializeSamplerState(ID3D11Device * device)
 	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
 	samplerDesc.MipLODBias = 0.f;
 	samplerDesc.MaxAnisotropy = 1;
-	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+	samplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
 	samplerDesc.BorderColor[0] = 0;
 	samplerDesc.BorderColor[1] = 0;
 	samplerDesc.BorderColor[2] = 0;
@@ -116,4 +116,16 @@ bool MeshShader::InitializeConstant(ID3D11Device * device)
 	}
 
 	return true;
+}
+
+void MeshShader::Begin(ID3D11DeviceContext * deviceContext, int indexCount, int startIndexLocation)
+{
+	deviceContext->PSSetSamplers(0, 1, &m_samplerState);
+	Shader::Begin(deviceContext, indexCount, startIndexLocation);
+}
+
+void MeshShader::End(ID3D11DeviceContext * deviceContext)
+{
+	deviceContext->PSSetSamplers(0, 0, nullptr);
+	Shader::End(deviceContext);
 }

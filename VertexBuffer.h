@@ -14,7 +14,6 @@ public:
 		XMFLOAT2 texCoord;
 		XMFLOAT3 normal;
 		XMFLOAT3 tangent;
-		XMFLOAT3 biTangent;
 	};
 
 	VertexBuffer();
@@ -25,8 +24,10 @@ public:
 	void Render(ID3D11DeviceContext* deviceContext);
 
 	VertexType* GetVertices() { return m_vertices;  }
-	ID3D11Buffer* GetVertexBuffer() { return m_vertexBuffer; }
-	int GetIndexCount() { return m_indexCount; }
+	ID3D11Buffer* GetVertexBuffer() const { return m_vertexBuffer; }
+	ID3D11Buffer* GetIndexBuffer() const { return m_indexBuffer; }
+	int GetIndexCount() const { return m_indexCount; }
+	int GetStartIndexLocation() const { return m_StartIndexLocation;  }
 
 private:
 	ID3D11Buffer* m_vertexBuffer;

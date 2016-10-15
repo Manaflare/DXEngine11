@@ -16,6 +16,7 @@ public:
 	bool IsKeyDown(unsigned int key);
 	bool IsKeyHit(unsigned int key);
 	void GetMouse(int& x, int& y);
+	void GetMouseState(int &x, int& y);
 
 private:
 	const static int s_NumKeys = 256;

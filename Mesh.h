@@ -66,12 +66,11 @@ private:
 	Shader* m_shader;
 
 	int Subsets;                        // Number of subsets in obj model
-	std::vector<XMFLOAT3> Vertices;     // Models vertex positions list
+	std::vector<XMFLOAT3> vertexPosition;     // Models vertex positions list
 	std::vector<VertexBuffer::VertexType> vertices;
 	std::vector<unsigned long> Indices;         // Models index list
 	std::vector<int> SubsetIndexStart;  // Subset's index offset
 	std::vector<int> SubsetMaterialID;  // Lookup ID for subsets surface material
-	XMFLOAT4X4 World;                     // Models world matrix
 	std::vector<XMFLOAT3> AABB;			// Stores models AABB (min vertex, max vertex, and center)
 										// Where AABB[0] is the min Vertex, and AABB[1] is the max vertex
 	XMFLOAT3 Center;					// True center of the model

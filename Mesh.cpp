@@ -19,6 +19,28 @@ Mesh::~Mesh()
 {
 }
 
+void Mesh::Initialize(ID3D11Device * device, Shader * shader, LPCSTR objFileName, bool isWritable)
+{
+	m_shader = shader;
+
+	m_meshName = objFileName;
+	m_meshName = m_meshName.substr(0, m_meshName.find_last_of("."));
+
+	if (!this->LoadObjModel(device, objFileName, true, true))
+	{
+		cout << "Couldn't LoadObjModel" << endl;
+		return;
+	}
+
+	m_vertexBuffer = new VertexBuffer();
+	m_vertexBuffer->InitializeMesh(device, shader, &vertices[0], &Indices[0], m_meshTriangles, m_totalVerts);
+
+	//if (textureFileName != NULL)
+	//{
+	//	m_texture = ResMgr->GetTextureByName((char*)textureFileName);
+	//}
+}
+
 bool Mesh::LoadObjModel(ID3D11Device * device, std::string Filename, bool IsRHCoordSys, bool ComputeNormals)
 {
 	ifstream fileIn(Filename, ios::in);
@@ -438,7 +460,7 @@ bool Mesh::LoadObjModel(ID3D11Device * device, std::string Filename, bool IsRHCo
 		// SwapChain->SetFullscreenState(false, NULL); // Make sure we are out of fullscreen
 
 													 // create message
-		 std::string message = "Could not open: ";
+		 std::string message = "Could not open obj file: ";
 		 message += Filename;
 
 		 MessageBox(0, message.c_str(),  // Display message
@@ -903,13 +925,15 @@ bool Mesh::LoadObjModel(ID3D11Device * device, std::string Filename, bool IsRHCo
 	 {
 		// SwapChain->SetFullscreenState(false, NULL); // Make sure we are out of fullscreen
 
-		 std::string message = "Could not open: ";
+
+		 // there might not be mtl file in the obj
+		 std::string message = "Could not open Mtl File: ";
 		 message += meshMatLib;
 
 		 MessageBox(0, message.c_str(),
 			 "Error", MB_OK);
 
-		 return false;
+		// return false;
 	 }
 
 
@@ -941,7 +965,7 @@ bool Mesh::LoadObjModel(ID3D11Device * device, std::string Filename, bool IsRHCo
 		 tempVert.texCoord = vertTexCoord[vertTCIndex[j]];
 
 		 vertices.push_back(tempVert);
-		 Vertices.push_back(tempVert.position);
+		 vertexPosition.push_back(tempVert.position);
 	 }
 
 	 //If computeNormals was set to true then we will create our own
@@ -965,99 +989,99 @@ bool Mesh::LoadObjModel(ID3D11Device * device, std::string Filename, bool IsRHCo
 		 XMVECTOR edge1 = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 		 XMVECTOR edge2 = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 
-//Compute face normals
-//And Tangents
-for (int i = 0; i < m_meshTriangles; ++i)
-{
-	//Get the vector describing one edge of our triangle (edge 0,2)
-	vecX = vertices[Indices[(i * 3)]].position.x - vertices[Indices[(i * 3) + 2]].position.x;
-	vecY = vertices[Indices[(i * 3)]].position.y - vertices[Indices[(i * 3) + 2]].position.y;
-	vecZ = vertices[Indices[(i * 3)]].position.z - vertices[Indices[(i * 3) + 2]].position.z;
-	edge1 = XMVectorSet(vecX, vecY, vecZ, 0.0f);    //Create our first edge
-
-													//Get the vector describing another edge of our triangle (edge 2,1)
-	vecX = vertices[Indices[(i * 3) + 2]].position.x - vertices[Indices[(i * 3) + 1]].position.x;
-	vecY = vertices[Indices[(i * 3) + 2]].position.y - vertices[Indices[(i * 3) + 1]].position.y;
-	vecZ = vertices[Indices[(i * 3) + 2]].position.z - vertices[Indices[(i * 3) + 1]].position.z;
-	edge2 = XMVectorSet(vecX, vecY, vecZ, 0.0f);    //Create our second edge
-
-													//Cross multiply the two edge vectors to get the un-normalized face normal
-	XMStoreFloat3(&unnormalized, XMVector3Cross(edge1, edge2));
-
-	tempNormal.push_back(unnormalized);
-
-	//Find first texture coordinate edge 2d vector
-	tcU1 = vertices[Indices[(i * 3)]].texCoord.x - vertices[Indices[(i * 3) + 2]].texCoord.x;
-	tcV1 = vertices[Indices[(i * 3)]].texCoord.y - vertices[Indices[(i * 3) + 2]].texCoord.y;
-
-	//Find second texture coordinate edge 2d vector
-	tcU2 = vertices[Indices[(i * 3) + 2]].texCoord.x - vertices[Indices[(i * 3) + 1]].texCoord.x;
-	tcV2 = vertices[Indices[(i * 3) + 2]].texCoord.y - vertices[Indices[(i * 3) + 1]].texCoord.y;
-
-	//Find tangent using both tex coord edges and position edges
-	tangent.x = (tcV1 * XMVectorGetX(edge1) - tcV2 * XMVectorGetX(edge2)) * (1.0f / (tcU1 * tcV2 - tcU2 * tcV1));
-	tangent.y = (tcV1 * XMVectorGetY(edge1) - tcV2 * XMVectorGetY(edge2)) * (1.0f / (tcU1 * tcV2 - tcU2 * tcV1));
-	tangent.z = (tcV1 * XMVectorGetZ(edge1) - tcV2 * XMVectorGetZ(edge2)) * (1.0f / (tcU1 * tcV2 - tcU2 * tcV1));
-
-	tempTangent.push_back(tangent);
-}
-
-//Compute vertex normals (normal Averaging)
-XMVECTOR normalSum = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-XMVECTOR tangentSum = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-int facesUsing = 0;
-float tX, tY, tZ;   //temp axis variables
-
-					//Go through each vertex
-for (int i = 0; i < m_totalVerts; ++i)
-{
-	//Check which triangles use this vertex
-	for (int j = 0; j < m_meshTriangles; ++j)
+	//Compute face normals
+	//And Tangents
+	for (int i = 0; i < m_meshTriangles; ++i)
 	{
-		if (Indices[j * 3] == i ||
-			Indices[(j * 3) + 1] == i ||
-			Indices[(j * 3) + 2] == i)
-		{
-			tX = XMVectorGetX(normalSum) + tempNormal[j].x;
-			tY = XMVectorGetY(normalSum) + tempNormal[j].y;
-			tZ = XMVectorGetZ(normalSum) + tempNormal[j].z;
+		//Get the vector describing one edge of our triangle (edge 0,2)
+		vecX = vertices[Indices[(i * 3)]].position.x - vertices[Indices[(i * 3) + 2]].position.x;
+		vecY = vertices[Indices[(i * 3)]].position.y - vertices[Indices[(i * 3) + 2]].position.y;
+		vecZ = vertices[Indices[(i * 3)]].position.z - vertices[Indices[(i * 3) + 2]].position.z;
+		edge1 = XMVectorSet(vecX, vecY, vecZ, 0.0f);    //Create our first edge
 
-			normalSum = XMVectorSet(tX, tY, tZ, 0.0f);  //If a face is using the vertex, add the unormalized face normal to the normalSum
+														//Get the vector describing another edge of our triangle (edge 2,1)
+		vecX = vertices[Indices[(i * 3) + 2]].position.x - vertices[Indices[(i * 3) + 1]].position.x;
+		vecY = vertices[Indices[(i * 3) + 2]].position.y - vertices[Indices[(i * 3) + 1]].position.y;
+		vecZ = vertices[Indices[(i * 3) + 2]].position.z - vertices[Indices[(i * 3) + 1]].position.z;
+		edge2 = XMVectorSet(vecX, vecY, vecZ, 0.0f);    //Create our second edge
 
-														//We can reuse tX, tY, tZ to sum up tangents
-			tX = XMVectorGetX(tangentSum) + tempTangent[j].x;
-			tY = XMVectorGetY(tangentSum) + tempTangent[j].y;
-			tZ = XMVectorGetZ(tangentSum) + tempTangent[j].z;
+														//Cross multiply the two edge vectors to get the un-normalized face normal
+		XMStoreFloat3(&unnormalized, XMVector3Cross(edge1, edge2));
 
-			tangentSum = XMVectorSet(tX, tY, tZ, 0.0f); //sum up face tangents using this vertex
+		tempNormal.push_back(unnormalized);
 
-			facesUsing++;
-		}
+		//Find first texture coordinate edge 2d vector
+		tcU1 = vertices[Indices[(i * 3)]].texCoord.x - vertices[Indices[(i * 3) + 2]].texCoord.x;
+		tcV1 = vertices[Indices[(i * 3)]].texCoord.y - vertices[Indices[(i * 3) + 2]].texCoord.y;
+
+		//Find second texture coordinate edge 2d vector
+		tcU2 = vertices[Indices[(i * 3) + 2]].texCoord.x - vertices[Indices[(i * 3) + 1]].texCoord.x;
+		tcV2 = vertices[Indices[(i * 3) + 2]].texCoord.y - vertices[Indices[(i * 3) + 1]].texCoord.y;
+
+		//Find tangent using both tex coord edges and position edges
+		tangent.x = (tcV1 * XMVectorGetX(edge1) - tcV2 * XMVectorGetX(edge2)) * (1.0f / (tcU1 * tcV2 - tcU2 * tcV1));
+		tangent.y = (tcV1 * XMVectorGetY(edge1) - tcV2 * XMVectorGetY(edge2)) * (1.0f / (tcU1 * tcV2 - tcU2 * tcV1));
+		tangent.z = (tcV1 * XMVectorGetZ(edge1) - tcV2 * XMVectorGetZ(edge2)) * (1.0f / (tcU1 * tcV2 - tcU2 * tcV1));
+
+		tempTangent.push_back(tangent);
 	}
 
-	//Get the actual normal by dividing the normalSum by the number of faces sharing the vertex
-	normalSum = normalSum / facesUsing;
-	tangentSum = tangentSum / facesUsing;
+	//Compute vertex normals (normal Averaging)
+	XMVECTOR normalSum = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+	XMVECTOR tangentSum = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+	int facesUsing = 0;
+	float tX, tY, tZ;   //temp axis variables
 
-	//Normalize the normalSum vector and tangent
-	normalSum = XMVector3Normalize(normalSum);
-	tangentSum = XMVector3Normalize(tangentSum);
+						//Go through each vertex
+	for (int i = 0; i < m_totalVerts; ++i)
+	{
+		//Check which triangles use this vertex
+		for (int j = 0; j < m_meshTriangles; ++j)
+		{
+			if (Indices[j * 3] == i ||
+				Indices[(j * 3) + 1] == i ||
+				Indices[(j * 3) + 2] == i)
+			{
+				tX = XMVectorGetX(normalSum) + tempNormal[j].x;
+				tY = XMVectorGetY(normalSum) + tempNormal[j].y;
+				tZ = XMVectorGetZ(normalSum) + tempNormal[j].z;
 
-	//Store the normal and tangent in our current vertex
-	vertices[i].normal.x = XMVectorGetX(normalSum);
-	vertices[i].normal.y = XMVectorGetY(normalSum);
-	vertices[i].normal.z = XMVectorGetZ(normalSum);
+				normalSum = XMVectorSet(tX, tY, tZ, 0.0f);  //If a face is using the vertex, add the unormalized face normal to the normalSum
 
-	vertices[i].tangent.x = XMVectorGetX(tangentSum);
-	vertices[i].tangent.y = XMVectorGetY(tangentSum);
-	vertices[i].tangent.z = XMVectorGetZ(tangentSum);
+															//We can reuse tX, tY, tZ to sum up tangents
+				tX = XMVectorGetX(tangentSum) + tempTangent[j].x;
+				tY = XMVectorGetY(tangentSum) + tempTangent[j].y;
+				tZ = XMVectorGetZ(tangentSum) + tempTangent[j].z;
 
-	//Clear normalSum, tangentSum and facesUsing for next vertex
-	normalSum = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-	tangentSum = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-	facesUsing = 0;
+				tangentSum = XMVectorSet(tX, tY, tZ, 0.0f); //sum up face tangents using this vertex
 
-}
+				facesUsing++;
+			}
+		}
+
+		//Get the actual normal by dividing the normalSum by the number of faces sharing the vertex
+		normalSum = normalSum / facesUsing;
+		tangentSum = tangentSum / facesUsing;
+
+		//Normalize the normalSum vector and tangent
+		normalSum = XMVector3Normalize(normalSum);
+		tangentSum = XMVector3Normalize(tangentSum);
+
+		//Store the normal and tangent in our current vertex
+		vertices[i].normal.x = XMVectorGetX(normalSum);
+		vertices[i].normal.y = XMVectorGetY(normalSum);
+		vertices[i].normal.z = XMVectorGetZ(normalSum);
+
+		vertices[i].tangent.x = XMVectorGetX(tangentSum);
+		vertices[i].tangent.y = XMVectorGetY(tangentSum);
+		vertices[i].tangent.z = XMVectorGetZ(tangentSum);
+
+		//Clear normalSum, tangentSum and facesUsing for next vertex
+		normalSum = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+		tangentSum = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+		facesUsing = 0;
+
+		}
 	 }
 
 	 CreateAABB();
@@ -1065,56 +1089,45 @@ for (int i = 0; i < m_totalVerts; ++i)
 	 return true;
 }
 
-void Mesh::Initialize(ID3D11Device * device, Shader * shader, LPCSTR objFileName, bool isWritable)
-{
-	m_shader = shader;
-
-	m_meshName = objFileName;
-	m_meshName = m_meshName.substr(0, m_meshName.find_last_of("."));
-
-	if (!this->LoadObjModel(device, objFileName, true, true))
-	{
-		cout << "Couldn't LoadObjModel" << endl;
-		return;
-	}
-
-	m_vertexBuffer = new VertexBuffer();
-	m_vertexBuffer->InitializeMesh(device, shader, &vertices[0], &Indices[0],m_meshTriangles, m_totalVerts);
-
-	//if (textureFileName != NULL)
-	//{
-	//	m_texture = ResMgr->GetTextureByName((char*)textureFileName);
-	//}
-}
 
 void Mesh::Update()
 {
 }
 
+#include "Engine.h"
 void Mesh::Render(ID3D11DeviceContext * deviceContext, XMFLOAT4X4 worldMatrix, XMFLOAT4X4 viewMatrix, XMFLOAT4X4 projMatrix)
 {
-	//deliver texture, constant
+	//Set Vertex and Pixel Shaders
+//	m_shader->Begin(deviceContext, m_vertexBuffer->GetIndexCount(), m_vertexBuffer->GetStartIndexLocation());
+
+//	unsigned int stride  = sizeof(VertexBuffer::VertexType), offset = 0;
+	
+	/////Draw NON-transparent subsets/////
 	for (int i = 0; i < Subsets; ++i)
 	{
-		// Only draw the NON-transparent parts of the model. 
-		if (!m_material[SubsetMaterialID[i]].IsTransparent)
+		if (!m_material[i].IsTransparent)
 		{
-			//cbPerObj.difColor = m_material[SubsetMaterialID[i]].Diffuse;      // Let shader know which color to draw the model 
-																						// (if no diffuse texture we defined)
-			//cbPerObj.hasTexture = material[SubsetMaterialID[i]].HasDiffTexture; // Let shader know if we need to use a texture
-			//cbPerObj.hasNormMap = material[SubsetMaterialID[i]].HasNormMap; // Let shader know if we need to do normal mapping
-			//d3d11DevCon->UpdateSubresource(cbPerObjectBuffer, 0, NULL, &cbPerObj, 0, 0);
-		//	d3d11DevCon->VSSetConstantBuffers(0, 1, &cbPerObjectBuffer);
-			//d3d11DevCon->PSSetConstantBuffers(1, 1, &cbPerObjectBuffer);
+			//Set the grounds index buffer
+		//	deviceContext->IASetIndexBuffer(m_vertexBuffer->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0);
+			//Set the grounds vertex buffer
+		//	ID3D11Buffer* vertexBuffer = m_vertexBuffer->GetVertexBuffer();
+	//		deviceContext->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
+		//	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+			//Set the WVP matrix and send it to the constant buffer in effect file
+			m_vertexBuffer->Render(deviceContext);
+			m_shader->SetShaderParameter(deviceContext, worldMatrix, viewMatrix, projMatrix);
+			//temp
+			//MeshShader* mesh_shader = (MeshShader*)m_shader;
+			//mesh_shader->SetShaderParameter(deviceContext, XMFLOAT4(1, 1, 1, 1));
 
 			// If this subset has a diffuse texture, send it to the pixel shader
-			if (m_material[SubsetMaterialID[i]].HasDiffTexture)
+			if(m_material[SubsetMaterialID[i]].HasDiffTexture)
 			{
 				Texture* diffuseTexture = ResMgr->GetTextureByIndex(m_material[SubsetMaterialID[i]].DiffuseTextureID);
-				if(diffuseTexture)
+				if (diffuseTexture)
 					m_shader->SetShaderParameter(deviceContext, diffuseTexture->GetTexture());
 			}
-				
+
 
 			// If this subset has a normal (bump) map, send it to the pixel shader
 			if (m_material[SubsetMaterialID[i]].HasNormMap)
@@ -1124,20 +1137,12 @@ void Mesh::Render(ID3D11DeviceContext * deviceContext, XMFLOAT4X4 worldMatrix, X
 					m_shader->SetShaderParameter(deviceContext, diffuseTexture->GetTexture(), 1);
 			}
 
-			// Draw the NON-transparent stuff
 			int indexStart = SubsetIndexStart[i];
 			int indexDrawAmount = SubsetIndexStart[i + 1] - indexStart;
 			deviceContext->DrawIndexed(indexDrawAmount, indexStart, 0);
-		}
+		}	
 	}
-
-	m_shader->SetShaderParameter(deviceContext, worldMatrix, viewMatrix, projMatrix);
-
-	//temp
-	MeshShader* mesh_shader = (MeshShader*)m_shader;
-	mesh_shader->SetShaderParameter(deviceContext, XMFLOAT4(1, 1, 1, 1));
-
-	m_vertexBuffer->Render(deviceContext);
+	
 }
 
 void Mesh::CreateAABB()
@@ -1147,21 +1152,21 @@ void Mesh::CreateAABB()
 	XMFLOAT3 maxVertex = XMFLOAT3(-FLT_MAX, -FLT_MAX, -FLT_MAX);
 	BoundingSphere = 0;
 
-	for (UINT i = 0; i < Vertices.size(); i++)
+	for (UINT i = 0; i < vertexPosition.size(); i++)
 	{
 		// The minVertex and maxVertex will most likely not be actual vertices in the model, but vertices
 		// that use the smallest and largest x, y, and z values from the model to be sure ALL vertices are
 		// covered by the bounding volume
 
 		//Get the smallest vertex 
-		minVertex.x = min(minVertex.x, Vertices[i].x);	// Find smallest x value in model
-		minVertex.y = min(minVertex.y, Vertices[i].y);	// Find smallest y value in model
-		minVertex.z = min(minVertex.z, Vertices[i].z);	// Find smallest z value in model
+		minVertex.x = min(minVertex.x, vertexPosition[i].x);	// Find smallest x value in model
+		minVertex.y = min(minVertex.y, vertexPosition[i].y);	// Find smallest y value in model
+		minVertex.z = min(minVertex.z, vertexPosition[i].z);	// Find smallest z value in model
 
 																//Get the largest vertex 
-		maxVertex.x = max(maxVertex.x, Vertices[i].x);	// Find largest x value in model
-		maxVertex.y = max(maxVertex.y, Vertices[i].y);	// Find largest y value in model
-		maxVertex.z = max(maxVertex.z, Vertices[i].z);	// Find largest z value in model
+		maxVertex.x = max(maxVertex.x, vertexPosition[i].x);	// Find largest x value in model
+		maxVertex.y = max(maxVertex.y, vertexPosition[i].y);	// Find largest y value in model
+		maxVertex.z = max(maxVertex.z, vertexPosition[i].z);	// Find largest z value in model
 	}
 
 	// Our AABB [0] is the min vertex and [1] is the max
@@ -1174,11 +1179,11 @@ void Mesh::CreateAABB()
 	Center.z = maxVertex.z - minVertex.z / 2.0f;
 
 	// Now that we have the center, get the bounding sphere	
-	for (UINT i = 0; i < Vertices.size(); i++)
+	for (UINT i = 0; i < vertexPosition.size(); i++)
 	{
-		float x = (Center.x - Vertices[i].x) * (Center.x - Vertices[i].x);
-		float y = (Center.y - Vertices[i].y) * (Center.y - Vertices[i].y);
-		float z = (Center.z - Vertices[i].z) * (Center.z - Vertices[i].z);
+		float x = (Center.x - vertexPosition[i].x) * (Center.x - vertexPosition[i].x);
+		float y = (Center.y - vertexPosition[i].y) * (Center.y - vertexPosition[i].y);
+		float z = (Center.z - vertexPosition[i].z) * (Center.z - vertexPosition[i].z);
 
 		// Get models bounding sphere
 		BoundingSphere = max(BoundingSphere, (x + y + z));

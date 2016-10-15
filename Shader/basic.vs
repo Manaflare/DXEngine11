@@ -17,9 +17,8 @@
 
 cbuffer MatrixBuffer
 {
+	matrix WVP;
 	matrix WorldMatrix;
-	matrix ViewMatrix;
-	matrix ProjectionMatrix;
 };
 
 
@@ -29,15 +28,15 @@ cbuffer MatrixBuffer
 struct VS_INPUT
 {
 	float4 vPosition	: POSITION;
-	float3 vNormal		: NORMAL;
 	float2 vTexcoord	: TEXCOORD0;
+	float3 vNormal		: NORMAL;
 };
 
 struct VS_OUTPUT
 {
-	float3 vNormal		: NORMAL;
-	float2 vTexcoord	: TEXCOORD0;
 	float4 vPosition	: SV_POSITION;
+	float2 vTexcoord	: TEXCOORD0;
+	float3 vNormal		: NORMAL;
 };
 
 //--------------------------------------------------------------------------------------
@@ -47,11 +46,8 @@ VS_OUTPUT VSMain( VS_INPUT Input )
 {
 	VS_OUTPUT Output;
 	
-	Output.vPosition = mul(Input.vPosition, WorldMatrix);
-	Output.vPosition = mul(Output.vPosition, ViewMatrix);
-	Output.vPosition = mul(Output.vPosition, ProjectionMatrix);
-
-	Output.vNormal = mul( Input.vNormal, (float3x3)WorldMatrix );
+	Output.vPosition = mul(Input.vPosition, WVP);
+	Output.vNormal = mul( Input.vNormal, WorldMatrix );
 	Output.vTexcoord = Input.vTexcoord;
 	
 	return Output;
