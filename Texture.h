@@ -9,10 +9,20 @@ using namespace std;
 class Texture
 {
 public:
+
+	enum E_TEXTURE_TYPE
+	{
+		TEXTURE_TYPE_TEXTURE1D = 0,
+		TEXTURE_TYPE_TEXTURE2D,
+		TEXTURE_TYPE_TEXTURE3D,
+		TEXTURE_TYPE_TEXTURECUBE,
+	};
 	Texture();
 	~Texture();
 
-	bool Initialize(ID3D11Device* device, LPCSTR fileName);
+	bool Initialize(ID3D11Device* device, LPCSTR fileName, E_TEXTURE_TYPE type = TEXTURE_TYPE_TEXTURE2D);
+
+	DirectX::ScratchImage LoadTextureFromFile(LPCSTR fileName);
 
 	ID3D11ShaderResourceView* GetTexture() { return m_texture; }
 	int GetWidth() { return m_width; }

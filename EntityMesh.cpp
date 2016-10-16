@@ -14,6 +14,8 @@ EntityMesh::EntityMesh()
 	m_triangleCount = 0;  // Total Triangles
 	m_totalVerts = 0;
 	m_meshTriangles = 0;
+
+	m_type = E_ENTITY_TYPE::ENTITY_TYPE_MESH;
 }
 
 
@@ -33,7 +35,6 @@ void EntityMesh::Initialize(ID3D11Device * device, Shader * shader)
 
 	m_meshName = m_meshName.substr(0, m_meshName.find_last_of("."));
 
-	m_vertexBuffer = new VertexBuffer();
 	m_vertexBuffer->InitializeMesh(device, shader, &vertices[0], &Indices[0], m_meshTriangles, m_totalVerts);
 
 	//if (textureFileName != NULL)
@@ -1093,6 +1094,7 @@ bool EntityMesh::LoadObjModel(ID3D11Device * device, std::string Filename, bool 
 
 void EntityMesh::Update()
 {
+	//Entity::Update();
 }
 
 void EntityMesh::Render(ID3D11DeviceContext* deviceContext, XMFLOAT4X4 viewMatrix, XMFLOAT4X4 projMatrix)

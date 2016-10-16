@@ -23,6 +23,7 @@ public:
 	Shader(ID3D11Device* device, HWND hwnd, LPCSTR shaderFileName, LPCSTR vertexFuncName, LPCSTR pixelFuncName);
 	virtual ~Shader();
 
+	bool Initialize(ID3D11Device* device, HWND hwnd, LPCSTR shaderFileName, LPCSTR vertexFuncName, LPCSTR pixelFuncName);
 	virtual void Begin(ID3D11DeviceContext* deviceContext, int indexCount, int startIndexLocation = 0);
 	virtual void End(ID3D11DeviceContext* deviceContext);
 
@@ -32,8 +33,6 @@ public:
 	bool IsInitialized() { return m_bInitialized;  }
 
 protected:
-	virtual bool Initialize(ID3D11Device* device, HWND hwnd, LPCSTR shaderFileName, LPCSTR vertexFuncName, LPCSTR pixelFuncName);
-
 	bool m_bInitialized;
 	bool InitializeShader(ID3D11Device* device, HWND hwnd, LPCSTR vsFileName, LPCSTR psFileName, LPCSTR vertexFuncName, LPCSTR pixelFuncName);
 	void OutputShaderErrorMessage(ID3DBlob* errorMessage, HWND hwnd, LPCSTR shaderFileName);

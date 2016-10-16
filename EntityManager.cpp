@@ -86,13 +86,13 @@ void EntityManager::RemoveEntity(Entity * entity)
 
 void EntityManager::RemoveAllEntities()
 {
-	while (!m_entities.empty())
+	for(Entity* entity : m_entities)
 	{
-		Entity* entity = m_entities.at(0);
-		m_entities.erase(m_entities.begin());
 		delete entity;
 		entity = nullptr;
 	}
+
+	m_entities.clear();
 }
 
 bool EntityManager::ContainsEntity(Entity * entity)

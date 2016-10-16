@@ -2,6 +2,8 @@
 
 #include <DirectXMath.h>
 #include <d3d11.h>
+
+class VertexBuffer;
 class Shader;
 class Mesh;
 
@@ -26,12 +28,15 @@ public:
 	virtual void Render(ID3D11DeviceContext* deviceContext, XMFLOAT4X4 viewMatrix, XMFLOAT4X4 projMatrix);
 
 	void SetPosition(float x = 0.f, float y = 0.f, float z = 0.f);
+	void SetPosition(XMFLOAT3 pos);
 	void SetVelocity(float x = 0.f, float y = 0.f, float z = 0.f);
 	void SetRotation(float rotation) { m_fRotation = rotation; }
-	void SetScale(XMFLOAT3 scale) { m_scale = scale; }
+	void SetScale(float scale) { m_scale.x = scale; m_scale.y = scale; m_scale.z = scale; }
 
 	E_ENTITY_TYPE GetEntityType() const { return m_type;  }
 protected:
+	Shader* m_shader;
+	VertexBuffer* m_vertexBuffer;
 	XMFLOAT4X4 m_worldMatrix;
 	XMFLOAT3 m_position;
 	XMFLOAT3 m_velocity;

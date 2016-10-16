@@ -15,21 +15,33 @@ const float PI = 3.14159265358979f;
 template <class T>
 void SafeRelease(T ptr)
 {
-	ptr->Release();
-	ptr = nullptr;
+	if (ptr)
+	{
+		ptr->Release();
+		ptr = nullptr;
+	}
+	
 }
 
 
 template <class T>
 void SafeDelete(T ptr)
 {
-	delete ptr;
-	ptr = nullptr;
+	if (ptr)
+	{
+		delete ptr;
+		ptr = nullptr;
+	}
+	
 }
 
 template <class T>
 void SafeDeleteArray(T ptr)
 {
-	delete [] ptr;
-	ptr = nullptr;
+	if (ptr)
+	{
+		delete[] ptr;
+		ptr = nullptr;
+	}
+	
 }

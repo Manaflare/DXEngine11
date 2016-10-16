@@ -49,6 +49,7 @@ bool Engine::Initialize(HINSTANCE hInstance, HWND hwnd)
 	m_resourceManager->LoadTextureResource(m_graphics->GetDevice(), "Texture/grassnormal.jpg");
 	m_resourceManager->LoadShaderResource(new TextureShader(m_graphics->GetDevice(), hwnd, "Shader/texture", "TextureVertexShader", "TexturePixelShader"));
 	m_resourceManager->LoadShaderResource(new MeshShader(m_graphics->GetDevice(), hwnd, "Shader/basic", "VSMain", "PSMain"));
+	m_resourceManager->LoadShaderResource(new Shader(m_graphics->GetDevice(), hwnd, "Shader/Sky", "SkyVSMain", "SkyPSMain"));
 
 	if (m_graphics)
 		m_graphics->Initialize(); 

@@ -1,4 +1,3 @@
-﻿  Input.cpp
-  c:\program files (x86)\windows kits\8.1\include\um\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
+﻿  Entity.cpp
   DXEngine.vcxproj -> E:\Project\DXEngine\Debug\DXEngine.exe
   DXEngine.vcxproj -> E:\Project\DXEngine\Debug\DXEngine.pdb (Full PDB)

@@ -40,7 +40,11 @@ struct PS_INPUT
 //--------------------------------------------------------------------------------------
 float4 PSMain( PS_INPUT Input ) : SV_TARGET
 {
+#if TEST_DEF == 1
+	float4 vDiffuse = float4(1.f,1.f,0.f,1.f);
+#else
 	float4 vDiffuse = g_txDiffuse.Sample( g_samLinear, Input.vTexcoord );
+#endif
 	return vDiffuse;
 }
 

@@ -424,7 +424,7 @@ bool DXManager::InitializeDepthStencilBuffer()
 	//setup the description
 	depthstencilDesc.DepthEnable = true;
 	depthstencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-	depthstencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
+	depthstencilDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
 
 	depthstencilDesc.StencilEnable = true;
 	depthstencilDesc.StencilReadMask = 0xFF;
@@ -450,7 +450,7 @@ bool DXManager::InitializeDepthStencilBuffer()
 	}
 
 	//set the depth stencil state
-	//m_deviceContext->OMSetDepthStencilState(m_depthstencilState, 1);
+	m_deviceContext->OMSetDepthStencilState(m_depthstencilState, 1);
 	if (FAILED(result))
 	{
 		return false;

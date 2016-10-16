@@ -1,6 +1,6 @@
 #pragma once
 
-#define DIREXTINPUT_VERSION 0x800 //removes annoying message defaulting to version 8
+#define DIRECTINPUT_VERSION 0x0800 //removes annoying message defaulting to version 8
 
 #include <dinput.h>
 

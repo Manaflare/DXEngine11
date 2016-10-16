@@ -173,6 +173,7 @@
     <ClCompile Include="ResourceShader.cpp" />
     <ClCompile Include="ResourceTexture.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="SkyShader.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TextureShader.cpp" />
     <ClCompile Include="VertexBuffer.cpp" />
@@ -199,6 +200,7 @@
     <ClInclude Include="ResourceShader.h" />
     <ClInclude Include="ResourceTexture.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="SkyShader.h" />
     <ClInclude Include="SystemDefs.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureShader.h" />
@@ -207,6 +209,8 @@
   <ItemGroup>
     <None Include="Shader\basic.ps" />
     <None Include="Shader\basic.vs" />
+    <None Include="Shader\Sky.ps" />
+    <None Include="Shader\Sky.vs" />
     <None Include="Shader\texture.ps" />
     <None Include="Shader\texture.vs" />
   </ItemGroup>

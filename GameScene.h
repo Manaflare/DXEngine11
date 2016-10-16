@@ -2,6 +2,7 @@
 #include "GameComponent.h"
 
 class Player;
+class Entity;
 
 class GameScene :
 	public GameComponent
@@ -16,6 +17,7 @@ public:
 
 private:
 	Player* m_player;
+	Entity* m_sky;
 
 };
 

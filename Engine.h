@@ -22,6 +22,7 @@ public:
 
 	Input* GetInput() const { return m_input;  }
 	Graphics* GetGraphics() const { return m_graphics; }
+	Camera* GetCamera() const { return m_camera; }
 	static Engine* GetEngine();
 
 

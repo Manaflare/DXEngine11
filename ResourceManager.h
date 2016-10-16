@@ -11,6 +11,8 @@ class ResourceManager
 public:
 	~ResourceManager();
 
+	void LoadAllTextureResource();
+	void LoadAllShaderResource();
 	void LoadShaderResource(ID3D11Device* device, HWND hwnd, char* shaderFileName, LPCSTR vertexFuncName, LPCSTR pixelFuncName);
 	void LoadShaderResource(Shader* shader);
 	void LoadTextureResource(ID3D11Device* device, const char* textureFileName);

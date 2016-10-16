@@ -24,6 +24,16 @@ ResourceManager::~ResourceManager()
 	}
 }
 
+void ResourceManager::LoadAllTextureResource()
+{
+	//load all texture resources in the texture folder
+}
+
+void ResourceManager::LoadAllShaderResource()
+{
+	//load all shader resources in the texture folder
+}
+
 void ResourceManager::LoadShaderResource(ID3D11Device * device, HWND hwnd, char * shaderFileName, LPCSTR vertexFuncName, LPCSTR pixelFuncName)
 {
 	//to avoid file path

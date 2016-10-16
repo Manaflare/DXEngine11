@@ -1,0 +1,13 @@
+TextureCube SkyMap;
+SamplerState SkySamplerState;
+
+struct PS_INPUT
+{
+	float4 position : SV_POSITION;
+	float3 tex : TEXCOORD0;
+};
+
+float4 SkyPSMain(PS_INPUT input) : SV_TARGET
+{
+	return SkyMap.Sample(SkySamplerState, input.tex);
+}

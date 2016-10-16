@@ -57,9 +57,6 @@ public:
 	void CreateAABB();
 
 private:
-	VertexBuffer* m_vertexBuffer;
-	Texture* m_texture;
-	Shader* m_shader;
 
 	int Subsets;                        // Number of subsets in obj model
 	std::vector<XMFLOAT3> vertexPosition;     // Models vertex positions list

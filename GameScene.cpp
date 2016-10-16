@@ -3,6 +3,9 @@
 #include "TextureShader.h "
 #include "ResourceManager.h"
 #include "MeshShader.h"
+#include "EntityManager.h"
+#include "Entity.h"
+#include "EntitySky.h"
 
 GameScene::GameScene()
 {
@@ -23,8 +26,19 @@ bool GameScene::Initialize()
 	if (playerShader == nullptr)
 		return false;
 		
+	Shader* SkyShader = (MeshShader*)ResMgr->GetShaderByName("Sky");
+	if (SkyShader == nullptr)
+		return false;
+
+	ID3D11Device* device = Engine::GetEngine()->GetGraphics()->GetDevice();
+	ID3D11DeviceContext* deviceContext = Engine::GetEngine()->GetGraphics()->GetDeviceContext();
+
 	m_player = new Player();
-	m_player->Initialize(Engine::GetEngine()->GetGraphics()->GetDevice(), Engine::GetEngine()->GetGraphics()->GetDeviceContext(), playerShader);
+	m_player->Initialize(device, deviceContext, playerShader);
+
+	m_sky = EntMgr->CreateEntity(Entity::ENTITY_TYPE_SKY);
+	if (m_sky)
+		m_sky->Initialize(device, SkyShader);
 
 	return true;
 }

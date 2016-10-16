@@ -144,7 +144,12 @@ bool Shader::InitializeShader(ID3D11Device * device, HWND hwnd, LPCSTR vsFileNam
 	std::wstring wpsTmp(str.begin(), str.end());
 	std::wstring wpsFileName = wpsTmp;
 
-    result = D3DCompileFromFile(wpsFileName.c_str(), NULL, NULL, pixelFuncName, "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, &pixelShaderBuffer, &errorMessage);
+	const D3D_SHADER_MACRO macro[] =
+	{
+		"TEST_DEF", "2", NULL, NULL,
+	};
+
+    result = D3DCompileFromFile(wpsFileName.c_str(), macro, NULL, pixelFuncName, "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, &pixelShaderBuffer, &errorMessage);
 	if (FAILED(result))
 	{
 		if (errorMessage)

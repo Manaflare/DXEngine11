@@ -41,7 +41,7 @@ void Camera::Update()
 		return;
 
 	//need a time
-	float time = 0.0005f;
+	static float time = 0.0005f;
 	float speed = 10.f * time;
 	
 	if (input->IsKeyDown(DIK_A))

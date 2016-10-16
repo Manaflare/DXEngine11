@@ -1,6 +1,6 @@
 #include "Entity.h"
 #include "SystemDefs.h"
-
+#include "VertexBuffer.h"
 
 Entity::Entity()
 {
@@ -9,12 +9,14 @@ Entity::Entity()
 	m_fRotation = 0.f;
 	XMStoreFloat4x4(&m_worldMatrix, XMMatrixIdentity());
 	m_type = ENTTIY_TYPE_NONE;
+	m_shader = nullptr;
+	m_vertexBuffer = new VertexBuffer();
 }
 
-
+#include <iostream>
 Entity::~Entity()
 {
-	
+	SafeDelete(m_vertexBuffer);
 }
 
 #include <iostream>
@@ -26,7 +28,7 @@ void Entity::Update()
 	m_position.x += m_velocity.x * 0.000001f;
 	m_position.y += m_velocity.y * 0.000001f;
 	//m_position.z += m_velocity.z * 0.01f;
-	m_position.z = 0.f;
+	m_position.z += m_velocity.y * 0.000001f;
 
 	m_velocity.x *= 0.96f;
 	m_velocity.y *= 0.96f;
@@ -52,6 +54,11 @@ void Entity::SetPosition(float x, float y, float z)
 	m_position.x = x;
 	m_position.y = y;
 	m_position.z = z;
+}
+
+void Entity::SetPosition(XMFLOAT3 pos)
+{
+	m_position = pos;
 }
 
 void Entity::SetVelocity(float x, float y, float z)

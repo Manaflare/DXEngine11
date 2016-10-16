@@ -84,6 +84,9 @@
     <ClCompile Include="EntitySprite.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="SkyShader.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework.h">
@@ -161,6 +164,9 @@
     <ClInclude Include="EnumConstant.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="SkyShader.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\basic.ps">
@@ -173,6 +179,12 @@
       <Filter>Shader</Filter>
     </None>
     <None Include="Shader\texture.vs">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="Shader\Sky.ps">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="Shader\Sky.vs">
       <Filter>Shader</Filter>
     </None>
   </ItemGroup>

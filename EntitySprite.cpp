@@ -5,7 +5,7 @@
 
 EntitySprite::EntitySprite()
 {
-
+	m_type = E_ENTITY_TYPE::ENTITY_TYPE_SPRITE;
 	m_vertexBuffer = nullptr;
 	m_texture = nullptr;
 

@@ -45,3 +45,6 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+Debug/Camera.obj
+Debug/DXEngine.log
+Debug/DXEngine.tlog/CL.command.1.tlog
