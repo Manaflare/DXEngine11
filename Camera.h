@@ -19,7 +19,9 @@ public:
 	XMFLOAT3	GetPosition() const				{ return m_Position; }
 	XMFLOAT3	GetRotation() const				{ return m_Rotation; }
 	void GetViewMatrix(XMFLOAT4X4& pOut)		{ pOut = m_viewMatrix; }
-	void Update();
+	void GetProjMatrix(XMFLOAT4X4& pOut)		{ pOut = m_projMatrix; }
+	void GetOrthoMatrix(XMFLOAT4X4& pOut)		{ pOut = m_orthoMatrix; }
+	void Update(double time);
 	void UpdateCamera();
 	
 
@@ -28,6 +30,8 @@ private:
 	XMFLOAT3 m_Position;
 	XMFLOAT3 m_Rotation;
 	XMFLOAT4X4 m_viewMatrix;
+	XMFLOAT4X4 m_projMatrix;
+	XMFLOAT4X4 m_orthoMatrix;
 	XMVECTOR m_Target;
 	XMVECTOR m_Up;
 

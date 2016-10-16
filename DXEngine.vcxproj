@@ -162,12 +162,14 @@
     <ClCompile Include="EntityMesh.cpp" />
     <ClCompile Include="EntitySky.cpp" />
     <ClCompile Include="EntitySprite.cpp" />
+    <ClCompile Include="EntityTerrain.cpp" />
     <ClCompile Include="Framework.cpp" />
     <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MeshShader.cpp" />
+    <ClCompile Include="NANATimer.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="ResourceShader.cpp" />
@@ -188,6 +190,7 @@
     <ClInclude Include="EntityMesh.h" />
     <ClInclude Include="EntitySky.h" />
     <ClInclude Include="EntitySprite.h" />
+    <ClInclude Include="EntityTerrain.h" />
     <ClInclude Include="EnumConstant.h" />
     <ClInclude Include="Framework.h" />
     <ClInclude Include="GameComponent.h" />
@@ -195,6 +198,7 @@
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="MeshShader.h" />
+    <ClInclude Include="NANATimer.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="ResourceShader.h" />

@@ -3,6 +3,7 @@
 #include "EntityMesh.h"
 #include "EntitySky.h"
 #include "EntitySprite.h"
+#include "EntityTerrain.h"
 
 enum E_ENTITY_TYPE : int;
 
@@ -60,6 +61,11 @@ Entity * EntityManager::CreateEntity(Entity::E_ENTITY_TYPE type)
 		case Entity::ENTITY_TYPE_SKY:
 		{
 			entity = new EntitySky();
+		}
+		break;
+		case Entity::ENTItY_TYPE_TERRAiN:
+		{
+			entity = new EntityTerrain();
 		}
 		break;
 	}

@@ -18,6 +18,7 @@ public:
 private:
 	Player* m_player;
 	Entity* m_sky;
+	Entity* m_terrain;
 
 };
 

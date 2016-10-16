@@ -30,10 +30,12 @@ void Entity::Update()
 	//m_position.z += m_velocity.z * 0.01f;
 	m_position.z += m_velocity.y * 0.000001f;
 
-	m_velocity.x *= 0.96f;
-	m_velocity.y *= 0.96f;
+
+//	cout << "X : " << m_position.x << " Y : " << m_position.y << " Z : " << m_position.z << endl;
+//	m_velocity.x *= 0.96f;
+//	m_velocity.y *= 0.96f;
 	//m_velocity.z *= 0.96f;
-	m_velocity.z = 0.f;
+//	m_velocity.z = 0.f;
 
 	//apply rotation & scale & translation
 	XMMATRIX Rotation = XMMatrixRotationY(m_fRotation);

@@ -12,6 +12,7 @@ Engine* Engine::m_instance = nullptr;
 
 Engine::Engine()
 {
+	m_fps = m_frameCount = 0;
 	m_graphics = nullptr;
 	m_resourceManager = nullptr;
 	m_entityManager = nullptr;
@@ -64,7 +65,6 @@ bool Engine::Initialize(HINSTANCE hInstance, HWND hwnd)
 	if (m_camera)
 		m_camera->Initialize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
-
 	m_input = new Input();
 	if (!m_input->Initialize(hInstance, hwnd, SCREEN_WIDTH, SCREEN_HEIGHT))
 	{
@@ -95,21 +95,26 @@ bool Engine::Initialize(HINSTANCE hInstance, HWND hwnd)
 
 void Engine::Run()
 {
-
 	Update();
 	Render();
 }
 
 void Engine::Update()
 {
+	//calculate frame
+	CalculateFrame();
+
+	//cout << "Frame Time : " << m_frameTime << " FPS : " << m_fps << endl;
 	//entity update
 	if(m_gameComponent)
 		m_gameComponent->Update();
 
-	m_entityManager->Update();
 	m_input->Update();
+	m_camera->Update(m_frameTime);
 
-	m_camera->Update();
+
+	m_entityManager->Update();
+	
 }
 
 void Engine::Render()
@@ -122,7 +127,7 @@ void Engine::Render()
 
 		XMFLOAT4X4 viewMatrix, projMatrix;
 		m_camera->GetViewMatrix(viewMatrix);
-		m_graphics->GetProjMatrix(projMatrix);
+		m_camera->GetProjMatrix(projMatrix);
 
 		if (m_gameComponent)
 			m_gameComponent->Render(m_graphics->GetDeviceContext(), viewMatrix, projMatrix);
@@ -138,6 +143,22 @@ void Engine::Render()
 		//render Text
 		m_graphics->EndScene();
 	}
+}
+
+void Engine::CalculateFrame()
+{
+	//calculate FPS
+	m_frameCount++;
+	if (m_Timer.EndTimer() > 1.0)
+	{
+		m_fps = m_frameCount;
+		m_frameCount = 0;
+		m_Timer.StartTimer();
+	}
+
+	double currentTime = m_Timer.GetTime();
+	m_frameTime = currentTime - m_frameTimeOld;
+	m_frameTimeOld = currentTime;
 }
 
 void Engine::Release()

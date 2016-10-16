@@ -18,6 +18,7 @@ public:
 		ENTITY_TYPE_MESH,
 		ENTITY_TYPE_SPRITE,
 		ENTITY_TYPE_SKY,
+		ENTItY_TYPE_TERRAiN,
 	};
 public:
 	Entity();

@@ -27,21 +27,23 @@ void Camera::Initialize(int nScreenWidth, int nScreenHeight)
 
 	XMFLOAT3 eye(m_Position.x, m_Position.y, m_Position.z), lookAt(0.f, 1.f, 0.f), up(0.f, 1.f, 0.f);
 
+
 	// Init default View Matrix;
 	XMStoreFloat4x4(&m_viewMatrix, XMMatrixLookAtLH(XMLoadFloat3(&m_Position), XMLoadFloat3(&lookAt), XMLoadFloat3(&up)));
 
-	//create projection matrix
-	XMMatrixPerspectiveFovLH(XM_PIDIV4, nScreenWidth / nScreenHeight, 1.0f, 1000.0f);
+	// Create the projection matrix for 3D rendering.
+	XMStoreFloat4x4(&m_projMatrix, XMMatrixPerspectiveFovLH(XM_PIDIV4, nScreenWidth / nScreenHeight, 1.0f, 1000.0f));
+
+	// Create an orthographic projection matrix for 2D rendering.
+	XMStoreFloat4x4(&m_orthoMatrix, XMMatrixOrthographicLH(nScreenWidth, nScreenHeight, 0.1f, 1000.f));
 }
 
-void Camera::Update()
+void Camera::Update(double time)
 {
 	Input* input = Engine::GetEngine()->GetInput();
 	if (input == nullptr)
 		return;
 
-	//need a time
-	static float time = 0.0005f;
 	float speed = 10.f * time;
 	
 	if (input->IsKeyDown(DIK_A))
@@ -61,7 +63,7 @@ void Camera::Update()
 	{
 		m_moveBackForward -= speed;
 	}
-
+	
 	int mouseCurrStateX;
 	int mouseCurrStateY;
 
@@ -80,6 +82,7 @@ void Camera::Update()
 
 	UpdateCamera();
 }
+#include <iostream>
 void Camera::UpdateCamera()
 {
 
@@ -118,4 +121,6 @@ void Camera::UpdateCamera()
 	//store
 	XMStoreFloat3(&m_Position, position);
 	XMStoreFloat4x4(&m_viewMatrix, viewMatrix);
+
+	//std::cout << "camera X : " << m_Position.x << " camera Y : " << m_Position.y << " camera Z : " << m_Position.z << std::endl;
 }
