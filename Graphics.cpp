@@ -46,6 +46,11 @@ void Graphics::EnableZBuffer(bool enable)
 	m_dxManager->EnableZBuffer(enable);
 }
 
+void Graphics::SwitchFireFrame()
+{
+	m_dxManager->SwitchFireFrame();
+}
+
 DXManager * Graphics::GetDXManager()
 {
 	return m_dxManager;

@@ -1,7 +1,7 @@
 #include "DXManager.h"
 #include "SystemDefs.h"
 
-DXManager::DXManager()
+DXManager::DXManager() : m_wireframe(false)
 {
 	m_swapChain = nullptr;
 	m_device = nullptr;
@@ -307,6 +307,19 @@ void DXManager::EnableZBuffer(bool bEnable)
 	}
 }
 
+void DXManager::SwitchFireFrame()
+{
+	m_wireframe = !m_wireframe;
+	if (m_wireframe)
+	{
+		m_deviceContext->RSSetState(m_wireFramerasterizerState);
+	}
+	else
+	{
+		m_deviceContext->RSSetState(m_rasterizerState);
+	}
+}
+
 ID3D11Device * DXManager::GetDevice()
 {
 	return m_device;
@@ -500,6 +513,13 @@ bool DXManager::InitializeRasterizeState()
 	rasterDesc.SlopeScaledDepthBias = 0.f;
 
 	result = m_device->CreateRasterizerState(&rasterDesc, &m_rasterizerState);
+	if (FAILED(result))
+	{
+		return false;
+	}
+
+	rasterDesc.FillMode = D3D11_FILL_WIREFRAME;
+	result = m_device->CreateRasterizerState(&rasterDesc, &m_wireFramerasterizerState);
 	if (FAILED(result))
 	{
 		return false;

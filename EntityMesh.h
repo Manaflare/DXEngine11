@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 #include <d3d11.h>
-
+#include "NANATimer.h"
 using namespace DirectX;
 using namespace std;
 
@@ -75,6 +75,8 @@ private:
 
 	std::vector<SurfaceMaterial> m_material;
 	std::string m_meshName;
+
+	NANATimer timer;
 
 };
 

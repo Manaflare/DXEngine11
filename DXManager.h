@@ -16,6 +16,7 @@ public:
 
 	void EnableAlphaBlending(bool bEnable);
 	void EnableZBuffer(bool bEnable);
+	void SwitchFireFrame();
 
 	ID3D11Device* GetDevice();
 	ID3D11DeviceContext* GetDeviceContext();
@@ -31,6 +32,7 @@ private:
 	bool InitializeZBuffer();
 
 	bool m_vsync;
+	bool m_wireframe;
 	int m_videocardMemory;
 	char m_videocareDescription[128];
 	IDXGISwapChain* m_swapChain;
@@ -41,6 +43,7 @@ private:
 	ID3D11DepthStencilState* m_depthstencilState;
 	ID3D11DepthStencilView* m_depthstencilView;
 	ID3D11RasterizerState* m_rasterizerState;
+	ID3D11RasterizerState* m_wireFramerasterizerState;
 	ID3D11BlendState* m_alphaEnabledBlendingState;
 	ID3D11BlendState* m_alphaDisabledBlendingState;
 	ID3D11DepthStencilState* m_depthDisabledstencilState;

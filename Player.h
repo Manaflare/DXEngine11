@@ -15,7 +15,7 @@ public:
 	void UpdateInput();
 
 private:
-	Entity* m_entity;
+	Entity* m_entity[2];
 
 };
 

@@ -27,12 +27,13 @@ void EntityMesh::Initialize(ID3D11Device * device, Shader * shader)
 {
 	m_shader = shader;
 	
+	timer.StartTimer();
 	if (!this->LoadObjModel(device, m_meshName.c_str(), true, true))
 	{
 		cout << "Couldn't LoadObjModel" << m_meshName.c_str() << endl;
 		return;
 	}
-
+	cout << "Load Model Succesfully : " << m_meshName.c_str() << " Time is : " << timer.EndTimer() << " seconds" << endl;
 	m_meshName = m_meshName.substr(0, m_meshName.find_last_of("."));
 
 	m_vertexBuffer->InitializeMesh(device, shader, &vertices[0], &Indices[0], m_meshTriangles, m_totalVerts);

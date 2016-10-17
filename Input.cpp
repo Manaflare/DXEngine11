@@ -7,7 +7,6 @@ Input::Input()
 	m_directInput = nullptr;
 	m_keyboard = nullptr;
 	m_mouse = nullptr;
-
 	memset(m_keys,0, sizeof(bool)* s_NumKeys);
 }
 
@@ -218,5 +217,10 @@ void Input::ProcessInput()
 	{
 		PostQuitMessage(0);
 		DestroyWindow(Engine::GetEngine()->GetGraphics()->GetHwnd());
+	}
+
+	if (IsKeyHit(DIK_F10))
+	{
+		Engine::GetEngine()->GetGraphics()->SwitchFireFrame();
 	}
 }

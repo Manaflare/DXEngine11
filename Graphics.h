@@ -19,6 +19,7 @@ public:
 
 	void EnableAlphaBlending(bool enable);
 	void EnableZBuffer(bool enable);
+	void SwitchFireFrame();
 
 	DXManager* GetDXManager();
 	HWND GetHwnd();

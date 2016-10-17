@@ -32,8 +32,8 @@ private:
 	XMFLOAT4X4 m_viewMatrix;
 	XMFLOAT4X4 m_projMatrix;
 	XMFLOAT4X4 m_orthoMatrix;
-	XMVECTOR m_Target;
-	XMVECTOR m_Up;
+	XMFLOAT3 m_Target;
+	XMFLOAT3 m_Up;
 
 	float m_moveLeftRight;
 	float m_moveBackForward;

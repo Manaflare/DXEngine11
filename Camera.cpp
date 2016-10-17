@@ -11,7 +11,8 @@ Camera::Camera()
 {
 	m_Position = XMFLOAT3(0.f, 0.f, 0.f);
 	m_Rotation = XMFLOAT3(0.f, 0.f, 0.f);
-
+	m_Target = XMFLOAT3(0.f, 0.f, 0.f);
+	m_Up = XMFLOAT3(0.f, 1.f, 0.f);
 	m_moveLeftRight = m_moveBackForward = m_camPitch = m_camYaw = 0.f;
 	m_mouseLastStateX = m_mouseLastStateY = -1.f;
 }
@@ -85,26 +86,33 @@ void Camera::Update(double time)
 #include <iostream>
 void Camera::UpdateCamera()
 {
-
+	static int test = 1;
 	XMVECTOR position = XMLoadFloat3(&m_Position);
 	XMMATRIX camRotationMatrix = XMMatrixRotationRollPitchYaw(m_camPitch, m_camYaw, 0);
 
 	// Transform the lookAt and up vector by the rotation matrix so the view is correctly rotated at the origin.
-	m_Target = XMVector3TransformCoord(DefaultForward, camRotationMatrix);
-	m_Target = XMVector3Normalize(m_Target);
+	XMVECTOR vTarget = XMVector3TransformCoord(DefaultForward, camRotationMatrix);
+	vTarget = XMVector3Normalize(vTarget);
 
-	XMMATRIX RotateYTempMatrix;
-	RotateYTempMatrix = XMMatrixRotationY(m_camYaw);
+	XMVECTOR camUp = XMLoadFloat3(&m_Up);
+	if (test == 1)
+	{
+		// First-Person Camera
+		XMMATRIX RotateYTempMatrix;
+		RotateYTempMatrix = XMMatrixRotationY(m_camYaw);
+		
+		camRight = XMVector3TransformCoord(DefaultRight, RotateYTempMatrix);
+		camUp = XMVector3TransformCoord(camUp, RotateYTempMatrix);
+		camForward = XMVector3TransformCoord(DefaultForward, RotateYTempMatrix);
+	}
+	else
+	{
+		// Free Camera
+		camRight = XMVector3TransformCoord(DefaultRight, camRotationMatrix);
+		camForward = XMVector3TransformCoord(DefaultForward, camRotationMatrix);
+		camUp = XMVector3Cross(camForward, camRight);
+	}
 
-	// Walk
-	//camRight = XMVector3TransformCoord(DefaultRight, RotateYTempMatrix);
-	//camUp = XMVector3TransformCoord(camUp, RotateYTempMatrix);
-	//camForward = XMVector3TransformCoord(DefaultForward, RotateYTempMatrix);
-
-	// Free Cam
-	camRight = XMVector3TransformCoord(DefaultRight, camRotationMatrix);
-	camForward = XMVector3TransformCoord(DefaultForward, camRotationMatrix);
-	XMVECTOR camUp = XMVector3Cross(camForward, camRight);
 
 	position += m_moveLeftRight*camRight;
 	position += m_moveBackForward*camForward;
@@ -113,13 +121,15 @@ void Camera::UpdateCamera()
 	m_moveBackForward = 0.0f;
 
 	// Translate the rotated camera position to the location of the viewer.
-	m_Target = position + m_Target;
+	vTarget = position + vTarget;
 
 	// Finally create the view matrix from the three updated vectors.
-	XMMATRIX viewMatrix = XMMatrixLookAtLH(position, m_Target, camUp);
+	XMMATRIX viewMatrix = XMMatrixLookAtLH(position, vTarget, camUp);
 
 	//store
 	XMStoreFloat3(&m_Position, position);
+	XMStoreFloat3(&m_Target, vTarget);
+	XMStoreFloat3(&m_Up, camUp);
 	XMStoreFloat4x4(&m_viewMatrix, viewMatrix);
 
 	//std::cout << "camera X : " << m_Position.x << " camera Y : " << m_Position.y << " camera Z : " << m_Position.z << std::endl;
