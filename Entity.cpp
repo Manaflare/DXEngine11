@@ -1,3 +1,4 @@
+#include "PreCompiled.h"
 #include "Entity.h"
 #include "SystemDefs.h"
 #include "VertexBuffer.h"
@@ -13,13 +14,11 @@ Entity::Entity()
 	m_vertexBuffer = new VertexBuffer();
 }
 
-#include <iostream>
 Entity::~Entity()
 {
 	SafeDelete(m_vertexBuffer);
 }
 
-#include <iostream>
 void Entity::Update()
 {
 	//reset world matrix

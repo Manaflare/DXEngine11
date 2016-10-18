@@ -1,3 +1,4 @@
+#include "PreCompiled.h"
 #include "ResourceShader.h"
 #include "SystemDefs.h"
 

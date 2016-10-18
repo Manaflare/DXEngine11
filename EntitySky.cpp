@@ -1,3 +1,4 @@
+#include "PreCompiled.h"
 #include "EntitySky.h"
 #include "ResourceManager.h"
 #include "VertexBuffer.h"

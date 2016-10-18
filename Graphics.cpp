@@ -1,5 +1,5 @@
+#include "PreCompiled.h"
 #include "Graphics.h"
-
 
 
 Graphics::Graphics()

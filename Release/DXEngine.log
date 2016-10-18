@@ -1,14 +1,16 @@
 ﻿  Engine.cpp
-  EntityMesh.cpp
-EntityMesh.cpp(1066): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-EntityMesh.cpp(1067): warning C4244: '인수': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  GameScene.cpp
-  MeshShader.cpp
-  Shader.cpp
+  FontManager.cpp
+e:\project\dxengine\dxengine\FW1FontWrapper.h(281): warning C4099: 'IFW1Factory': 처음에는 'class'을(를) 사용하여 형식 이름을 표시했는데 이제는 'struct'을(를) 사용하여 표시합니다.
+  e:\project\dxengine\dxengine\FontManager.h(3): note: 'IFW1Factory' 선언을 참조하십시오.
+e:\project\dxengine\dxengine\FW1FontWrapper.h(756): warning C4099: 'IFW1FontWrapper': 처음에는 'class'을(를) 사용하여 형식 이름을 표시했는데 이제는 'struct'을(를) 사용하여 표시합니다.
+  e:\project\dxengine\dxengine\FW1FontWrapper.h(756): note: 'IFW1FontWrapper' 선언을 참조하십시오.
+e:\project\dxengine\dxengine\FW1FontWrapper.h(1009): warning C4099: 'IFW1Factory': 처음에는 'class'을(를) 사용하여 형식 이름을 표시했는데 이제는 'struct'을(를) 사용하여 표시합니다.
+  e:\project\dxengine\dxengine\FW1FontWrapper.h(1009): note: 'IFW1Factory' 선언을 참조하십시오.
+FontManager.cpp(102): warning C4244: '인수': 'int'에서 'FLOAT'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   코드를 생성하고 있습니다.
-  7 of 1482 functions ( 0.5%) were compiled, the rest were copied from previous compilation.
+  1 of 1593 functions ( 0.1%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    26 functions had inline decision re-evaluated but remain unchanged
+    2 functions had inline decision re-evaluated but remain unchanged
   코드를 생성했습니다.
   DXEngine.vcxproj -> E:\Project\DXEngine\Release\DXEngine.exe
   DXEngine.vcxproj -> E:\Project\DXEngine\Release\DXEngine.pdb (Full PDB)

@@ -11,37 +11,3 @@ const bool FULL_SCREEN = false;
 const bool VSYNC_ENABLE = false;
 
 const float PI = 3.14159265358979f;
-
-template <class T>
-void SafeRelease(T ptr)
-{
-	if (ptr)
-	{
-		ptr->Release();
-		ptr = nullptr;
-	}
-	
-}
-
-
-template <class T>
-void SafeDelete(T ptr)
-{
-	if (ptr)
-	{
-		delete ptr;
-		ptr = nullptr;
-	}
-	
-}
-
-template <class T>
-void SafeDeleteArray(T ptr)
-{
-	if (ptr)
-	{
-		delete[] ptr;
-		ptr = nullptr;
-	}
-	
-}

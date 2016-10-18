@@ -1,3 +1,4 @@
+#include "PreCompiled.h"
 #include "Engine.h"
 #include "SystemDefs.h"
 #include "ResourceManager.h"
@@ -7,6 +8,7 @@
 #include "TextureShader.h"
 #include "MeshShader.h"
 #include "Camera.h"
+#include "FontManager.h"
 
 Engine* Engine::m_instance = nullptr;
 
@@ -90,6 +92,8 @@ bool Engine::Initialize(HINSTANCE hInstance, HWND hwnd)
 		cout << "No Game Component" << endl;
 	}
 	
+	FontMgr->Initialize(m_graphics->GetDevice(), m_graphics->GetDeviceContext(), L"Arial");
+
 	return true;
 }
 
@@ -105,6 +109,14 @@ void Engine::Update()
 	CalculateFrame();
 
 	//cout << "Frame Time : " << m_frameTime << " FPS : " << m_fps << endl;
+	string strFPS = to_string(m_fps);
+	string str = "FPS : ";
+	str += strFPS;
+
+	FontManager::FontType fontType;
+	fontType.text = str;
+	FontMgr->AddText(fontType);
+
 	//entity update
 	if(m_gameComponent)
 		m_gameComponent->Update();
@@ -121,9 +133,14 @@ void Engine::Render()
 {
 	if (m_graphics)
 	{
+
 		m_graphics->BeginScene(0.f, 0.f, 1.f, 1.f);
 
 		//render stuff goes here
+		//render Text
+
+		
+
 
 		XMFLOAT4X4 viewMatrix, projMatrix;
 		m_camera->GetViewMatrix(viewMatrix);
@@ -141,6 +158,9 @@ void Engine::Render()
 		//render UI
 
 		//render Text
+		FontMgr->Render();
+		
+		
 		m_graphics->EndScene();
 	}
 }
@@ -163,6 +183,7 @@ void Engine::CalculateFrame()
 
 void Engine::Release()
 {
+	FontMgr->Release();
 	SafeDelete(m_instance);
 }
 

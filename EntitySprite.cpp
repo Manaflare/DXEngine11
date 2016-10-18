@@ -1,3 +1,4 @@
+#include "PreCompiled.h"
 #include "EntitySprite.h"
 #include "SystemDefs.h"
 #include "ResourceManager.h"

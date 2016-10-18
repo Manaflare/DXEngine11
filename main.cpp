@@ -1,3 +1,4 @@
+#include "PreCompiled.h"
 #include "Framework.h"
 #include "GameScene.h"
 int main()

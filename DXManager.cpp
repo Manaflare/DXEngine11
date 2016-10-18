@@ -1,3 +1,4 @@
+#include "PreCompiled.h"
 #include "DXManager.h"
 #include "SystemDefs.h"
 

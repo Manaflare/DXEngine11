@@ -1,3 +1,4 @@
+#include "PreCompiled.h"
 #include "ResourceManager.h"
 #include "SystemDefs.h"
 
